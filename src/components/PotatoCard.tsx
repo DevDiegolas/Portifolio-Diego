@@ -1,15 +1,22 @@
 const scattered = [
-  { top: 120, side: 'left',  offset: '9%',  size: 56, rotate: 12,  opacity: 0.85 },
-  { top: 190, side: 'right', offset: '9%',  size: 40, rotate: -8,  opacity: 0.75 },
-  { top: 265, side: 'left',  offset: '14%', size: 48, rotate: 5,   opacity: 0.80 },
-  { top: 340, side: 'right', offset: '12%', size: 36, rotate: -15, opacity: 0.70 },
-  { top: 405, side: 'left',  offset: '10%', size: 52, rotate: 20,  opacity: 0.75 },
-  { top: 460, side: 'right', offset: '7%',  size: 44, rotate: -4,  opacity: 0.80 },
+  { top: 86, side: 'left', offset: '8%', size: 42, rotate: 8, opacity: 0.76 },
+  { top: 132, side: 'right', offset: '10%', size: 34, rotate: -6, opacity: 0.66 },
+  { top: 178, side: 'left', offset: '14%', size: 52, rotate: 14, opacity: 0.82 },
+  { top: 228, side: 'right', offset: '7%', size: 38, rotate: -11, opacity: 0.7 },
+  { top: 274, side: 'left', offset: '10%', size: 46, rotate: 4, opacity: 0.74 },
+  { top: 326, side: 'right', offset: '13%', size: 32, rotate: -18, opacity: 0.68 },
+  { top: 372, side: 'left', offset: '6%', size: 58, rotate: 19, opacity: 0.8 },
+  { top: 420, side: 'right', offset: '9%', size: 40, rotate: -2, opacity: 0.73 },
+  { top: 468, side: 'left', offset: '12%', size: 36, rotate: -9, opacity: 0.69 },
+  { top: 516, side: 'right', offset: '5%', size: 50, rotate: 16, opacity: 0.78 },
+  { top: 566, side: 'left', offset: '9%', size: 44, rotate: 7, opacity: 0.72 },
+  { top: 618, side: 'right', offset: '11%', size: 38, rotate: -14, opacity: 0.67 },
+  { top: 664, side: 'left', offset: '13%', size: 48, rotate: 21, opacity: 0.77 },
 ];
 
 export default function PotatoCard() {
   return (
-    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-96 transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
+    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-[42rem] transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
 
       {/* Background com blur */}
       <img
@@ -48,21 +55,21 @@ export default function PotatoCard() {
           <div className="w-12 h-12 shrink-0 drop-shadow-xl transition-transform duration-500 group-hover:scale-110">
             <img src="/src/assets/icon-potato.png" alt="Game Icon" className="w-full h-full object-contain" />
           </div>
-          <h3 className="text-2xl font-bold text-white">Potato Clicker</h3>
+          <h3 className="pixel-title text-sm md:text-base font-bold pixel-green">Potato Clicker</h3>
         </div>
 
         {/* Descrição — aparece no hover */}
         <div className="mt-6 max-w-lg text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 space-y-3">
-          <p className="text-gray-200 text-sm leading-relaxed">
+          <p className="pixel-body text-lg md:text-xl text-slate-200 leading-relaxed">
             A simple clicker game where you grow your potato empire. Click to harvest, buy upgrades, and watch your potatoes multiply!
           </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="pixel-body text-lg md:text-xl text-slate-200 leading-relaxed">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="pixel-body text-lg md:text-xl text-slate-200 leading-relaxed">
             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
           </p>
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="pixel-body text-lg md:text-xl text-slate-200 leading-relaxed">
             Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione sequi nesciunt.
           </p>
         </div>

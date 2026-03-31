@@ -18,7 +18,7 @@ export default function GameCard({
   overlayVia = 'via-gray-900/70',
 }: GameCardProps) {
   return (
-    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-96 transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
+    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-[42rem] transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
 
       {/* Background Image */}
       <img
@@ -42,12 +42,12 @@ export default function GameCard({
               className="w-full h-full object-contain"
             />
           </div>
-          <h3 className="text-2xl font-bold text-white">{title}</h3>
+          <h3 className="pixel-title text-sm md:text-base font-bold pixel-cyan">{title}</h3>
         </div>
 
         {/* Descrição — aparece no hover */}
         <div className="mt-6 max-w-lg text-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-150 space-y-3">
-          <p className="text-gray-300 text-sm leading-relaxed">
+          <p className="pixel-body text-lg md:text-xl text-slate-200 leading-relaxed">
             {description}
           </p>
         </div>
