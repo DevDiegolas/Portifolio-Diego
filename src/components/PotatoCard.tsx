@@ -9,13 +9,13 @@ const scattered = [
 
 export default function PotatoCard() {
   return (
-    <div className="w-full relative overflow-hidden h-24 hover:h-130 transition-all duration-500 ease-in-out cursor-pointer group">
+    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-96 transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
 
       {/* Background com blur */}
       <img
         src="/src/assets/bg-potato.png"
         alt=""
-        className="absolute inset-0 w-full h-full object-cover scale-110 blur-md opacity-70"
+        className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-110 blur-md opacity-70 group-hover:opacity-80 transition-all duration-500"
       />
 
       {/* Overlay escuro para legibilidade */}

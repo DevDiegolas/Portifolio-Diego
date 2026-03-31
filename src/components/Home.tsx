@@ -53,18 +53,12 @@ export default function Home() {
           <PotatoCard />
           <GameCard
             title="Solo Blocking"
-            description="inspirado em solo leveling"
+            description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
             bgImageName="bg-solo.png"
             iconImageName="icon-solo.png"
             accentColor="#7c3aed"
             overlayFrom="from-black/95"
             overlayVia="via-purple-950/80"
-          />
-          <GameCard
-            title="Multiplayer Arena"
-            description="Exploring rollback netcode and client-side prediction for a seamless online competitive experience."
-            bgImageName="bg-potato.png"
-            iconImageName="icon-potato.png"
           />
         </div>
       </section>
