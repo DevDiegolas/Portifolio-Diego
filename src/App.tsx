@@ -99,7 +99,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-950 font-sans text-gray-200">
-      <Header />
+      {path !== '/' && <Header />}
       <main key={path} className={`page-transition ${direction === 'forward' ? 'page-transition-forward' : 'page-transition-back'}`}>
         {content}
       </main>

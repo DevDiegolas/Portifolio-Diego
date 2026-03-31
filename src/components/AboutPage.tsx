@@ -54,7 +54,7 @@ function StatBar({
 const STATS = [
   { label: 'FRONTEND', value: 82, color: '#8ecae6', spec: '— React, TypeScript, CSS',    delay: 300  },
   { label: 'BACKEND',  value: 67, color: '#9be564', spec: '— Node.js, Go, REST APIs',    delay: 450  },
-  { label: 'GAME DEV', value: 72, color: '#f497c2', spec: '— Godot, Unity, GameMaker',   delay: 600  },
+  { label: 'GAME DEV', value: 93, color: '#f497c2', spec: '— Godot, Unity, GameMaker',   delay: 600  },
   { label: 'TEACHING', value: 90, color: '#ffd166', spec: '— Mentoring, Classes',         delay: 750  },
   { label: 'SYSTEMS',  value: 55, color: '#a78bfa', spec: '— AWS, PostgreSQL, Linux',     delay: 900  },
 ];
@@ -103,11 +103,6 @@ export default function AboutPage() {
     <div className="flex flex-col w-full mt-10 space-y-16">
       <section className="max-w-6xl mx-auto px-6 w-full">
 
-        {/* Page title */}
-        <h2 className="pixel-title text-xl md:text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
-          About Me
-        </h2>
-
         {/* ── Character Sheet frame ── */}
         <div
           className="relative rounded-2xl p-6 md:p-8 space-y-8"
@@ -136,7 +131,7 @@ export default function AboutPage() {
             <div>
               <SheetHeader>IDENTITY</SheetHeader>
               <div className="space-y-0">
-                <InfoRow label="NAME"   value="Diego" />
+                <InfoRow label="NAME"   value="Diego Gonçalves Piovezan Santana" />
                 <InfoRow label="CLASS"  value="Fullstack Engineer" />
                 <InfoRow label="SPEC"   value="Game Developer" />
                 <InfoRow label="ORIGIN" value="Brazil" />
