@@ -7,10 +7,30 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
 node_modules
+dashboard/node_modules
 dist
 dist-ssr
+coverage
+.turbo
+.cache
 *.local
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build outputs / temp
+build
+tmp
+temp
+*.tmp
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +42,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Opensquad local/private state
+_opensquad/_browser_profile/
+_opensquad/_logs/
+
+# Secrets / credentials
+credentials.json
+*.pem
+*.key
