@@ -18,7 +18,7 @@ export default function GameCard({
   overlayVia = 'via-gray-900/70',
 }: GameCardProps) {
   return (
-    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-[42rem] transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
+    <div className="w-[45%] mx-auto relative overflow-hidden h-24 hover:h-168 transition-all duration-500 ease-in-out cursor-pointer group hover:w-full">
 
       {/* Background Image */}
       <img
