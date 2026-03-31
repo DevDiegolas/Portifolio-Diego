@@ -1,58 +1,76 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Footer from './Footer';
+import bgPotato from '../assets/bg-potato.png';
+import bgSolo from '../assets/bg-solo.png';
+import iconPotato from '../assets/icon-potato.png';
+import iconSolo from '../assets/icon-solo.png';
 
 const games = [
   {
     id: 'potato-clicker',
     title: 'Potato Clicker',
     status: 'Coming Soon',
-    description: 'Idle progression with upgrades, economy loops, and long-session retention.',
-    accent: 'from-lime-400/35 via-yellow-300/15 to-transparent',
+    genre: 'Idle / Clicker',
+    description:
+      'Idle progression with upgrades, economy loops, and long-session retention mechanics.',
+    bg: bgPotato,
+    icon: iconPotato,
+    accentFrom: '#a3e635',
+    accentTo: '#fde047',
   },
   {
     id: 'solo-blocking',
     title: 'Solo Blocking',
     status: 'Coming Soon',
-    description: 'Fast combat prototype focused on responsiveness, movement, and impact feedback.',
-    accent: 'from-fuchsia-400/30 via-violet-300/15 to-transparent',
+    genre: 'Action / Combat',
+    description:
+      'Fast combat prototype focused on responsiveness, movement, and impact feedback.',
+    bg: bgSolo,
+    icon: iconSolo,
+    accentFrom: '#e879f9',
+    accentTo: '#818cf8',
   },
 ];
 
 export default function GamesPage() {
   const [selected, setSelected] = useState(0);
-  const rouletteRef = useRef<HTMLElement | null>(null);
+  const [transitioning, setTransitioning] = useState(false);
+  const rouletteRef = useRef<HTMLDivElement>(null);
 
   const activeGame = games[selected];
-  const wheelItems = useMemo(() => {
-    const total = games.length;
 
-    return games.map((game, index) => {
-      let offset = index - selected;
+  const selectGame = (index: number) => {
+    if (index === selected) return;
+    setTransitioning(true);
+    setTimeout(() => {
+      setSelected(index);
+      setTransitioning(false);
+    }, 220);
+  };
 
-      if (offset > total / 2) offset -= total;
-      if (offset < -total / 2) offset += total;
-
-      return { ...game, offset };
-    });
-  }, [selected]);
-
-  const nextGame = () => setSelected((prev) => (prev + 1) % games.length);
-  const prevGame = () => setSelected((prev) => (prev - 1 + games.length) % games.length);
+  const nextGame = () => selectGame((selected + 1) % games.length);
+  const prevGame = () => selectGame((selected - 1 + games.length) % games.length);
 
   useEffect(() => {
     const el = rouletteRef.current;
     if (!el) return;
-
-    const onWheel = (event: WheelEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      if (event.deltaY > 0) nextGame();
-      if (event.deltaY < 0) prevGame();
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      if (e.deltaY > 0) nextGame();
+      else prevGame();
     };
-
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, []);
+  }, [selected]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown') nextGame();
+      if (e.key === 'ArrowUp') prevGame();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [selected]);
 
   return (
     <div className="flex flex-col w-full mt-10 space-y-16">
@@ -61,78 +79,186 @@ export default function GamesPage() {
           Games
         </h2>
 
-        <div className="relative overflow-hidden rounded-3xl border border-gray-800 bg-gray-900/70 min-h-[72vh]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,rgba(255,255,255,0.09),transparent_30%)]" />
-          <div className={`absolute inset-0 bg-gradient-to-r ${activeGame.accent} transition-all duration-700`} />
-
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[420px_1fr] min-h-[72vh]">
-            <aside
-              ref={rouletteRef}
-              className="border-r border-gray-800/80 bg-gray-950/70 p-5 md:p-7 flex flex-col"
-              style={{ overscrollBehavior: 'contain' }}
+        {/* Main container */}
+        <div
+          className="relative overflow-hidden rounded-3xl border border-gray-800 min-h-[72vh]"
+          style={{ isolation: 'isolate' }}
+        >
+          {/* ── Blurred background image ── */}
+          {games.map((game, i) => (
+            <div
+              key={game.id}
+              className="absolute inset-0 transition-opacity duration-700"
+              style={{ opacity: i === selected ? 1 : 0, zIndex: 0 }}
             >
-              <div className="flex items-center justify-between mb-4">
-                <p className="pixel-title text-xs text-slate-200">Game Roulette</p>
-                <span className="pixel-body text-base text-slate-400">{selected + 1}/{games.length}</span>
-              </div>
+              <img
+                src={game.bg}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ filter: 'blur(18px) saturate(1.3)', transform: 'scale(1.08)' }}
+              />
+              {/* Dark overlay */}
+              <div className="absolute inset-0 bg-black/62" />
+              {/* Accent gradient from game color */}
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  background: `radial-gradient(ellipse 80% 60% at 30% 50%, ${game.accentFrom}55, transparent)`,
+                }}
+              />
+            </div>
+          ))}
 
-              <p className="pixel-body text-base text-slate-400 mb-4">Scroll to rotate</p>
+          {/* ── Scanlines overlay ── */}
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.06]"
+            style={{
+              backgroundImage: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 4px)',
+              zIndex: 1,
+            }}
+          />
 
-              <div className="relative flex-1 overflow-hidden rounded-xl border border-gray-800 bg-black/25 p-3">
-                <div className="relative h-full min-h-[380px]">
-                  {wheelItems.map((game) => {
-                    const absOffset = Math.abs(game.offset);
-                    const isActive = game.offset === 0;
+          {/* ── Content grid ── */}
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_260px] min-h-[72vh]">
 
-                    return (
-                      <button
-                        key={game.id}
-                        type="button"
-                        onClick={() => setSelected(games.findIndex((item) => item.id === game.id))}
-                        style={{
-                          transform: `translateY(calc(-50% + ${game.offset * 112}px)) scale(${isActive ? 1 : 0.92})`,
-                          opacity: isActive ? 1 : 0.62,
-                          zIndex: isActive ? 10 : 5 - absOffset,
-                        }}
-                        className={`text-left rounded-lg border transition-all duration-300 px-4 py-4 ${
-                          isActive
-                            ? 'border-cyan-200/60 bg-cyan-300/15'
-                            : 'border-gray-700 bg-gray-900/55 hover:opacity-90'
-                        } ${absOffset > 1 ? 'blur-[1px]' : ''} absolute left-0 right-0 top-1/2`}
-                      >
-                        <p className="pixel-title text-xs text-white">{game.title}</p>
-                        <p className="pixel-body text-lg text-slate-300 mt-1">{game.status}</p>
-                      </button>
-                    );
-                  })}
+            {/* LEFT — Game info */}
+            <div className="p-8 md:p-12 flex flex-col justify-between">
+              {/* Top: genre + title + description */}
+              <div>
+                <p
+                  className="pixel-title text-xs mb-3 tracking-widest uppercase"
+                  style={{
+                    color: activeGame.accentFrom,
+                    transition: 'color 0.4s',
+                    textShadow: `0 0 12px ${activeGame.accentFrom}88`,
+                  }}
+                >
+                  {activeGame.genre}
+                </p>
+
+                <div
+                  className="transition-all duration-300"
+                  style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(6px)' : 'translateY(0)' }}
+                >
+                  <h3 className="pixel-title text-3xl md:text-5xl text-white leading-tight">
+                    {activeGame.title}
+                  </h3>
+
+                  <p className="pixel-body text-xl md:text-2xl text-slate-300 mt-5 max-w-lg leading-relaxed">
+                    {activeGame.description}
+                  </p>
                 </div>
               </div>
-            </aside>
 
-            <div className="p-6 md:p-10 flex flex-col justify-end">
-              <div className="mb-auto">
-                <p className="pixel-title text-xs text-slate-300/80">Selected Game</p>
-                <h3 className="pixel-title text-lg md:text-2xl text-white mt-3">{activeGame.title}</h3>
-                <p className="pixel-body text-xl md:text-2xl text-slate-200 mt-3 max-w-2xl leading-relaxed">
-                  {activeGame.description}
-                </p>
-              </div>
+              {/* Bottom: status badge + play button */}
+              <div className="mt-10 flex items-center gap-4 flex-wrap">
+                <span
+                  className="pixel-title text-xs px-3 py-1.5 rounded border"
+                  style={{
+                    borderColor: `${activeGame.accentFrom}55`,
+                    color: activeGame.accentFrom,
+                    background: `${activeGame.accentFrom}15`,
+                  }}
+                >
+                  {activeGame.status}
+                </span>
 
-              <div className="rounded-2xl border border-gray-700 bg-black/40 min-h-[320px] md:min-h-[380px] flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-[linear-gradient(transparent_96%,rgba(255,255,255,0.08)_96%)] bg-[length:100%_7px] opacity-30" />
-                <p className="pixel-title text-sm md:text-base text-slate-100 z-10 text-center px-4">
-                  Trailer do jogo
-                </p>
-              </div>
-
-              <div className="mt-5">
                 <button
                   type="button"
                   disabled
-                  className="pixel-title text-xs px-5 py-3 rounded-md bg-emerald-600/80 text-white border border-emerald-300/30 cursor-not-allowed"
+                  className="pixel-title text-xs px-6 py-3 rounded-md border cursor-not-allowed opacity-50 text-white"
+                  style={{ borderColor: `${activeGame.accentFrom}44`, background: `${activeGame.accentFrom}22` }}
                 >
-                  Play Game
+                  ▶ Play Game
                 </button>
+              </div>
+            </div>
+
+            {/* RIGHT — Roulette wheel */}
+            <div
+              ref={rouletteRef}
+              className="border-l border-white/10 bg-black/40 backdrop-blur-sm flex flex-col"
+              style={{ overscrollBehavior: 'contain' }}
+            >
+              {/* Header */}
+              <div className="px-4 py-4 border-b border-white/10 flex items-center justify-between">
+                <p className="pixel-title text-xs text-slate-400 tracking-widest uppercase">Select</p>
+                <p className="pixel-body text-base text-slate-500">{selected + 1} / {games.length}</p>
+              </div>
+
+              {/* Arrow up */}
+              <button
+                type="button"
+                onClick={prevGame}
+                className="w-full py-2 text-slate-500 hover:text-white transition-colors text-xs pixel-title hover:bg-white/5"
+              >
+                ▲
+              </button>
+
+              {/* Game cards */}
+              <div className="flex-1 flex flex-col justify-center gap-2 px-3 py-2 overflow-hidden">
+                {games.map((game, index) => {
+                  const offset = index - selected;
+                  const isActive = offset === 0;
+                  const isAdjacent = Math.abs(offset) === 1;
+
+                  return (
+                    <button
+                      key={game.id}
+                      type="button"
+                      onClick={() => selectGame(index)}
+                      className="text-left rounded-xl border transition-all duration-300 px-3 py-3 flex items-center gap-3"
+                      style={{
+                        borderColor: isActive ? `${game.accentFrom}88` : 'rgba(255,255,255,0.08)',
+                        background: isActive ? `${game.accentFrom}18` : 'rgba(0,0,0,0.3)',
+                        opacity: isActive ? 1 : isAdjacent ? 0.55 : 0.3,
+                        transform: isActive ? 'scale(1)' : 'scale(0.95)',
+                        boxShadow: isActive ? `0 0 20px ${game.accentFrom}33` : 'none',
+                      }}
+                    >
+                      {/* Icon */}
+                      <div
+                        className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 border"
+                        style={{ borderColor: isActive ? `${game.accentFrom}55` : 'rgba(255,255,255,0.1)' }}
+                      >
+                        <img src={game.icon} alt={game.title} className="w-full h-full object-cover" />
+                      </div>
+
+                      {/* Text */}
+                      <div className="min-w-0">
+                        <p className="pixel-title text-xs text-white truncate">{game.title}</p>
+                        <p
+                          className="pixel-body text-sm mt-0.5 truncate"
+                          style={{ color: isActive ? game.accentFrom : '#94a3b8' }}
+                        >
+                          {game.genre}
+                        </p>
+                      </div>
+
+                      {/* Active indicator */}
+                      {isActive && (
+                        <div
+                          className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ background: game.accentFrom, boxShadow: `0 0 8px ${game.accentFrom}` }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Arrow down */}
+              <button
+                type="button"
+                onClick={nextGame}
+                className="w-full py-2 text-slate-500 hover:text-white transition-colors text-xs pixel-title hover:bg-white/5"
+              >
+                ▼
+              </button>
+
+              {/* Scroll hint */}
+              <div className="px-4 py-3 border-t border-white/10 text-center">
+                <p className="pixel-body text-sm text-slate-600">scroll or ↑↓</p>
               </div>
             </div>
           </div>

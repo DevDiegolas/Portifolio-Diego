@@ -4,6 +4,7 @@ import Home from './components/Home';
 import ResumePage from './components/ResumePage';
 import GamesPage from './components/GamesPage';
 import AboutPage from './components/AboutPage';
+import GameLoader from './components/GameLoader';
 
 const ROUTE_ORDER: Record<string, number> = {
   '/': 0,
@@ -18,6 +19,7 @@ function getPathname() {
 }
 
 export default function App() {
+  const [loaded, setLoaded] = useState(() => sessionStorage.getItem('portfolio_loaded') === '1');
   const [path, setPath] = useState(getPathname);
   const [direction, setDirection] = useState<'forward' | 'back'>('forward');
   const pathRef = useRef(path);
@@ -83,6 +85,17 @@ export default function App() {
   if (path === '/resume') content = <ResumePage />;
   if (path === '/games') content = <GamesPage />;
   if (path === '/about') content = <AboutPage />;
+
+  if (!loaded) {
+    return (
+      <GameLoader
+        onComplete={() => {
+          sessionStorage.setItem('portfolio_loaded', '1');
+          setLoaded(true);
+        }}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 font-sans text-gray-200">
