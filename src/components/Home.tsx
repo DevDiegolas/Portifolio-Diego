@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import PotatoCard from './PotatoCard';
-import GameCard from './GameCard';
 
 // ── Tech data ──────────────────────────────────────────────────────────────
 const CDN = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
@@ -58,6 +56,98 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
     <div style={{ opacity: vis ? 1 : 0, transition: 'opacity 0.6s ease' }}>
       {children}
     </div>
+  );
+}
+
+// ── Game window card ───────────────────────────────────────────────────────
+interface GameWindowProps {
+  filename: string;
+  title: string;
+  description: string;
+  icon: string;
+  bgImage: string;
+  tags: string[];
+  accentColor: string;
+}
+
+function GameWindow({ filename, title, description, icon, bgImage, tags, accentColor }: GameWindowProps) {
+  return (
+    <a
+      href="/games"
+      className="block overflow-hidden transition-all duration-200"
+      style={{
+        borderRadius: 4,
+        border: `1px solid ${accentColor}28`,
+        background: '#06070d',
+        textDecoration: 'none',
+        boxShadow: `0 0 0 0 ${accentColor}00`,
+      }}
+      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${accentColor}55`; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${accentColor}28`; }}
+    >
+      {/* Window title bar */}
+      <div
+        className="flex items-center gap-2 px-3 py-1.5"
+        style={{ background: '#08090e', borderBottom: `1px solid ${accentColor}18` }}
+      >
+        <span className="pixel-title text-xs" style={{ color: `${accentColor}77` }}>▶</span>
+        <span className="pixel-title text-xs" style={{ color: '#3a4556', fontSize: '0.6rem' }}>{filename}</span>
+        <div className="flex-1" />
+        {tags.map(t => (
+          <span
+            key={t}
+            className="pixel-title"
+            style={{
+              fontSize: '0.52rem',
+              padding: '1px 5px',
+              color: `${accentColor}bb`,
+              background: `${accentColor}0f`,
+              border: `1px solid ${accentColor}28`,
+              borderRadius: 2,
+            }}
+          >{t}</span>
+        ))}
+      </div>
+
+      {/* Content row */}
+      <div className="flex items-center gap-4 p-3 md:p-4">
+        {/* Thumbnail */}
+        <div className="relative w-20 h-14 shrink-0 overflow-hidden" style={{ borderRadius: 3, border: `1px solid ${accentColor}18` }}>
+          <img
+            src={bgImage}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'blur(4px) saturate(0.6)', opacity: 0.4 }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img src={icon} alt={title} className="w-9 h-9 object-contain drop-shadow-lg" />
+          </div>
+        </div>
+
+        {/* Text */}
+        <div className="flex-1 min-w-0">
+          <p
+            className="pixel-title mb-1"
+            style={{ fontSize: '0.58rem', color: accentColor, letterSpacing: '0.08em' }}
+          >{title}</p>
+          <p
+            className="pixel-body text-xl text-slate-500 leading-snug"
+            style={{
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            } as React.CSSProperties}
+          >{description}</p>
+        </div>
+
+        {/* Arrow */}
+        <span className="pixel-title text-xs shrink-0" style={{ color: `${accentColor}55` }}>→</span>
+      </div>
+
+      {/* Accent bottom */}
+      <div style={{ height: 1, background: `linear-gradient(90deg, ${accentColor}55, transparent 70%)` }} />
+    </a>
   );
 }
 
@@ -156,7 +246,7 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
         <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
         <span className="pixel-title text-xs"             style={{ color: '#8ecae6' }}>{currentCmd}</span>
         <span
-          className="inline-block w-[7px] h-[14px] align-middle"
+          className="inline-block w-1.75 h-3.5 align-middle"
           style={{ background: (typing || blink) ? '#8ecae6' : 'transparent' }}
         />
       </div>
@@ -164,16 +254,14 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
   );
 }
 
-// ── Command input ──────────────────────────────────────────────────────────
-function CommandInput({ onCommand, disabled }: { onCommand: (cmd: string) => void; disabled: boolean }) {
+// ── Inline prompt ──────────────────────────────────────────────────────────
+function InlinePrompt({ onCommand }: { onCommand: (cmd: string) => void }) {
   const [value,   setValue]   = useState('');
   const [history, setHistory] = useState<string[]>([]);
   const [histIdx, setHistIdx] = useState(-1);
   const inputRef              = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!disabled) inputRef.current?.focus();
-  }, [disabled]);
+  useEffect(() => { inputRef.current?.focus(); }, []);
 
   const submit = () => {
     const cmd = value.trim();
@@ -202,20 +290,18 @@ function CommandInput({ onCommand, disabled }: { onCommand: (cmd: string) => voi
 
   return (
     <div
-      className="flex items-center gap-2 px-6 py-4 shrink-0"
-      style={{ borderTop: '1px solid rgba(142,202,230,0.12)', background: '#07080f' }}
+      className="flex items-center gap-2 cursor-text"
       onClick={() => inputRef.current?.focus()}
     >
       <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
       <input
         ref={inputRef}
         value={value}
-        disabled={disabled}
         onChange={e => { setValue(e.target.value); setHistIdx(-1); }}
         onKeyDown={onKeyDown}
-        className="flex-1 bg-transparent outline-none pixel-title text-xs disabled:opacity-30"
+        className="flex-1 bg-transparent outline-none pixel-title text-xs"
         style={{ color: '#8ecae6', caretColor: '#8ecae6' }}
-        placeholder={disabled ? 'loading...' : "type a command... (try 'help')"}
+        placeholder="type a command... (try 'help')"
         spellCheck={false}
         autoComplete="off"
         autoCorrect="off"
@@ -234,9 +320,9 @@ const NAV = [
 
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function Home() {
-  const [showGames,  setShowGames]  = useState(false);
-  const [cmdHistory, setCmdHistory] = useState<{ cmd: string; out: React.ReactNode }[]>([]);
-  const bodyRef                     = useRef<HTMLDivElement>(null);
+  const [showContent, setShowContent] = useState(false);
+  const [cmdHistory,  setCmdHistory]  = useState<{ cmd: string; out: React.ReactNode }[]>([]);
+  const bodyRef                       = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -244,7 +330,7 @@ export default function Home() {
     }, 40);
   };
 
-  useEffect(() => { if (showGames)          scrollToBottom(); }, [showGames]);
+  useEffect(() => { if (showContent)        scrollToBottom(); }, [showContent]);
   useEffect(() => { if (cmdHistory.length)  scrollToBottom(); }, [cmdHistory]);
 
   const gotoPage = (path: string) => {
@@ -294,9 +380,9 @@ export default function Home() {
           <a href="/resume" style={{ color: '#8ecae6' }} className="hover:underline">resume/</a>
         </div>
       ),
-      pwd:    <span className="pixel-body text-xl" style={{ color: '#8ecae6' }}>/home/diego/portfolio</span>,
-      home:   <span className="pixel-body text-xl text-slate-400">Already at ~/</span>,
-      '~':    <span className="pixel-body text-xl text-slate-400">Already at ~/</span>,
+      pwd:  <span className="pixel-body text-xl" style={{ color: '#8ecae6' }}>/home/diego/portfolio</span>,
+      home: <span className="pixel-body text-xl text-slate-400">Already at ~/</span>,
+      '~':  <span className="pixel-body text-xl text-slate-400">Already at ~/</span>,
     };
 
     const out = responses[cmd] ?? (
@@ -344,48 +430,64 @@ export default function Home() {
         className="flex-1 overflow-y-auto min-h-0 px-6 py-6 md:px-10 md:py-8"
       >
         {/* Auto-typed intro */}
-        <TerminalIntro onDone={() => setShowGames(true)} onScroll={scrollToBottom} />
+        <TerminalIntro onDone={() => setShowContent(true)} onScroll={scrollToBottom} />
 
-        {/* Games section */}
-        {showGames && (
+        {/* Games + contacts — appear as terminal output of `ls games/` */}
+        {showContent && (
           <FadeIn delay={80}>
-            <div className="mt-4 -mx-6 md:-mx-10">
-              <PotatoCard />
-              <GameCard
-                title="Solo Blocking"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
-                bgImageName="bg-solo.png"
-                iconImageName="icon-solo.png"
-                accentColor="#7c3aed"
-                overlayFrom="from-black/95"
-                overlayVia="via-purple-950/80"
+            <div className="mt-3 space-y-2">
+              <p className="pixel-body text-lg" style={{ color: '#2e3d52', userSelect: 'none' }}>
+                {'  drwxr-xr-x  2  diego  staff'}
+              </p>
+              <GameWindow
+                filename="games/potato-clicker"
+                title="POTATO CLICKER"
+                description="An idle clicker game where you grow your potato empire. Click to harvest, buy upgrades, and watch your potatoes multiply!"
+                icon="/src/assets/icon-potato.png"
+                bgImage="/src/assets/bg-potato.png"
+                tags={['idle', 'godot', 'in-dev']}
+                accentColor="#c2ce2b"
+              />
+              <GameWindow
+                filename="games/solo-blocking"
+                title="SOLO BLOCKING"
+                description="A fast combat prototype with tight controls and responsive block mechanics."
+                icon="/src/assets/icon-solo.png"
+                bgImage="/src/assets/bg-solo.png"
+                tags={['combat', 'godot', 'in-dev']}
+                accentColor="#a855f7"
               />
             </div>
-          </FadeIn>
-        )}
 
-        {/* Footer */}
-        {showGames && (
-          <FadeIn delay={350}>
-            <div
-              className="mt-8 pt-5 pb-2"
-              style={{ borderTop: '1px solid rgba(142,202,230,0.08)' }}
-            >
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                <p className="pixel-body text-lg text-slate-600">
-                  © 2026 Diego Gonçalves. Crafting games &amp; scalable systems.
-                </p>
-                <div className="flex gap-5">
-                  <a href="https://github.com/DevDiegolas" target="_blank" rel="noreferrer" className="pixel-body text-xl text-slate-500 hover:text-white transition-colors">GitHub</a>
-                  <a href="https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/" target="_blank" rel="noreferrer" className="pixel-body text-xl text-slate-500 hover:text-white transition-colors">LinkedIn</a>
-                  <a href="/resume" className="pixel-body text-xl text-slate-500 hover:text-white transition-colors">Resume</a>
-                </div>
+            {/* Contacts as terminal key-value output */}
+            <div className="mt-6 pt-4" style={{ borderTop: '1px solid rgba(142,202,230,0.06)' }}>
+              <p className="pixel-title mb-3" style={{ fontSize: '0.58rem', color: '#2e3d52', letterSpacing: '0.1em' }}># contacts</p>
+              <div className="space-y-1.5">
+                {[
+                  { key: 'github',   value: 'DevDiegolas',                href: 'https://github.com/DevDiegolas',                               external: true  },
+                  { key: 'linkedin', value: 'diego-gonçalves-piovezan',   href: 'https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/', external: true  },
+                  { key: 'resume',   value: '~/resume',                   href: '/resume',                                                      external: false },
+                ].map(({ key, value, href, external }) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52', width: 60, textAlign: 'right' }}>{key}</span>
+                    <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52' }}>→</span>
+                    <a
+                      href={href}
+                      target={external ? '_blank' : undefined}
+                      rel={external ? 'noreferrer' : undefined}
+                      className="pixel-body text-xl transition-colors"
+                      style={{ color: '#4a5f78' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#cbd5e1'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#4a5f78'; }}
+                    >{value}</a>
+                  </div>
+                ))}
               </div>
             </div>
           </FadeIn>
         )}
 
-        {/* Command history */}
+        {/* Command history — rendered inline in the flow */}
         {cmdHistory.length > 0 && (
           <div className="mt-6 space-y-4">
             {cmdHistory.map((entry, i) => (
@@ -400,11 +502,15 @@ export default function Home() {
           </div>
         )}
 
-        <div className="h-4" />
-      </div>
+        {/* Inline prompt — appears right where the terminal stops */}
+        {showContent && (
+          <div className="mt-4">
+            <InlinePrompt onCommand={handleCommand} />
+          </div>
+        )}
 
-      {/* ── Command input ── */}
-      <CommandInput onCommand={handleCommand} disabled={!showGames} />
+        <div className="h-6" />
+      </div>
     </div>
   );
 }
