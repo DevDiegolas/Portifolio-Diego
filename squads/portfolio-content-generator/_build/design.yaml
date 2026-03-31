@@ -1,0 +1,85 @@
+squad:
+  code: "portfolio-content-generator"
+  name: "Portfolio Content Generator"
+  description: "Gera textos para o portifólio pessoal: bio, descrições de projetos e seções do site"
+
+agents:
+  - id: "pedro-projeto"
+    name: "Pedro Projeto"
+    title: "Pesquisador de Codebase"
+    icon: "📊"
+    execution: "subagent"
+    role_summary: "Lê o repositório do portifólio e extrai dados estruturados sobre projetos, stack técnica e diferenciais"
+    skills: []
+    tasks:
+      - name: "extract-project-data"
+        file: "tasks/extract-project-data.md"
+        description: "Lê arquivos do repositório e extrai dados estruturados dos projetos"
+
+  - id: "carla-copy"
+    name: "Carla Copy"
+    title: "Copywriter de Portifólio"
+    icon: "✍️"
+    execution: "inline"
+    role_summary: "Escreve bio profissional, descrições de projetos e textos das seções usando frameworks STAR e PAS adaptados ao tom descontraído e técnico do Diego"
+    skills: []
+    tasks:
+      - name: "write-portfolio-copy"
+        file: "tasks/write-portfolio-copy.md"
+        description: "Gera o texto de portifólio baseado no brief de projetos"
+
+  - id: "renata-revisao"
+    name: "Renata Revisao"
+    title: "Revisora de Qualidade"
+    icon: "🔍"
+    execution: "inline"
+    role_summary: "Avalia o texto gerado contra critérios de recrutadores, emite APPROVE/REJECT com feedback acionável"
+    skills: []
+    tasks:
+      - name: "review-portfolio-copy"
+        file: "tasks/review-portfolio-copy.md"
+        description: "Revisa o copy de portifólio e emite veredito estruturado"
+
+pipeline:
+  - step: 1
+    name: "checkpoint-focus"
+    type: "checkpoint"
+    output_file: "squads/portfolio-content-generator/output/generation-focus.md"
+  - step: 2
+    name: "extract-project-data"
+    type: "agent"
+    agent: "pedro-projeto"
+    execution: "subagent"
+    input_file: "squads/portfolio-content-generator/output/generation-focus.md"
+    output_file: "squads/portfolio-content-generator/output/project-brief.md"
+    model_tier: "fast"
+  - step: 3
+    name: "write-portfolio-copy"
+    type: "agent"
+    agent: "carla-copy"
+    execution: "inline"
+    input_file: "squads/portfolio-content-generator/output/project-brief.md"
+    output_file: "squads/portfolio-content-generator/output/portfolio-copy-draft.md"
+  - step: 4
+    name: "checkpoint-approve-draft"
+    type: "checkpoint"
+  - step: 5
+    name: "review-portfolio-copy"
+    type: "agent"
+    agent: "renata-revisao"
+    execution: "inline"
+    input_file: "squads/portfolio-content-generator/output/portfolio-copy-draft.md"
+    output_file: "squads/portfolio-content-generator/output/portfolio-copy-final.md"
+    on_reject: 3
+  - step: 6
+    name: "checkpoint-final-approval"
+    type: "checkpoint"
+
+skills_installed:
+  - "web_search"
+  - "web_fetch"
+
+best_practices_consulted:
+  - "copywriting.md"
+  - "technical-writing.md"
+  - "review.md"

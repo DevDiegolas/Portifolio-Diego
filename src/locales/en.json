@@ -1,0 +1,17 @@
+{
+  "header": {
+    "home": "Home",
+    "about": "About Me",
+    "games": "Games",
+    "resume": "Resume"
+  },
+  "home": {
+    "greeting": "Hi, I'm Diego",
+    "role": "Fullstack Software Engineer & Game Developer",
+    "tech_title": "My Tech Arsenal",
+    "tech_most_used": "Most Used",
+    "tech_familiar": "Familiar With",
+    "tech_learning": "Currently Learning",
+    "games_title": "Game Architecture & Logic"
+  }
+}

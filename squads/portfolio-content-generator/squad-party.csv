@@ -1,0 +1,4 @@
+id,name,title,icon,execution,path
+pedro-projeto,Pedro Projeto,Pesquisador de Codebase,📊,subagent,./agents/pedro-projeto.agent.md
+carla-copy,Carla Copy,Copywriter de Portifólio,✍️,inline,./agents/carla-copy.agent.md
+renata-revisao,Renata Revisao,Revisora de Qualidade,🔍,inline,./agents/renata-revisao.agent.md

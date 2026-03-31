@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  portfolio_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      # Espelha o seu código local para dentro do container
+      - .:/app
+      # Evita que o Docker tente ler a pasta node_modules da sua máquina
+      - /app/node_modules
+    environment:
+      # Esse comando é mágico: garante que o hot-reload do Vite funcione perfeitamente rodando no Docker
+      - CHOKIDAR_USEPOLLING=true

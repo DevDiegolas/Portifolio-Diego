@@ -1,0 +1,29 @@
+squad_code: "portfolio-content-generator"
+purpose: "Gerar textos para o portifólio pessoal: descrições de projetos, bio profissional e seções do site"
+domain: "content"
+
+company:
+  name: "Diego"
+  tone: "Descontraído e técnico"
+  products: "Portifólio pessoal de Engenheiro Fullstack & Game Developer"
+
+language: "Português (BR)"
+
+context:
+  audience: "Recrutadores e empresas"
+  platforms: "Portifólio website (não redes sociais)"
+  tone: "Descontraído e técnico — direto, sem frescura, mas com profundidade técnica"
+
+tools_needed:
+  - "file-reader (leitura do código e projetos existentes no repositório)"
+  - "copywriting (melhores práticas de copywriting técnico)"
+  - "technical-writing (escrita técnica clara e acessível)"
+
+investigation:
+  enabled: false
+  profiles: []
+
+target_formats:
+  - "portfolio-bio"
+  - "portfolio-project-description"
+  - "portfolio-section-copy"

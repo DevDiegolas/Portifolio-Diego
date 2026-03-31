@@ -1,0 +1,15 @@
+name: "Portfolio Content Generator Pipeline"
+version: "1.0.0"
+
+steps:
+  - file: steps/step-01-checkpoint-focus.md
+  - file: steps/step-02-extract-project-data.md
+  - file: steps/step-03-write-portfolio-copy.md
+  - file: steps/step-04-checkpoint-approve-draft.md
+  - file: steps/step-05-review-portfolio-copy.md
+  - file: steps/step-06-checkpoint-final-approval.md
+
+checkpoints:
+  - step-01-checkpoint-focus
+  - step-04-checkpoint-approve-draft
+  - step-06-checkpoint-final-approval
