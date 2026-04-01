@@ -12,7 +12,7 @@ function Corner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   return (
     <div
       className={`absolute w-5 h-5 ${classes}`}
-      style={{ borderColor: '#e8c97a' }}
+      style={{ borderColor: 'var(--t-frame-light)' }}
     />
   );
 }
@@ -21,10 +21,10 @@ function Corner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
 function SheetHeader({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-4">
-      <span className="pixel-title text-xs" style={{ color: '#e8c97a' }}>◈</span>
-      <span className="pixel-title text-xs tracking-widest" style={{ color: '#e8c97a' }}>{children}</span>
-      <span className="pixel-title text-xs" style={{ color: '#e8c97a' }}>◈</span>
-      <div className="flex-1 h-px" style={{ background: '#3d2e12' }} />
+      <span className="pixel-title text-xs" style={{ color: 'var(--t-frame-light)' }}>◈</span>
+      <span className="pixel-title text-xs tracking-widest" style={{ color: 'var(--t-frame-light)' }}>{children}</span>
+      <span className="pixel-title text-xs" style={{ color: 'var(--t-frame-light)' }}>◈</span>
+      <div className="flex-1 h-px" style={{ background: 'var(--t-frame-line)' }} />
     </div>
   );
 }
@@ -32,9 +32,9 @@ function SheetHeader({ children }: { children: React.ReactNode }) {
 // ── Info row ───────────────────────────────────────────────────────────────
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: '#2a1f0a' }}>
-      <span className="pixel-title text-xs w-32 shrink-0 text-right pt-1" style={{ color: '#9e7d40' }}>{label}</span>
-      <span className="pixel-body text-xl text-slate-300 leading-tight">{value}</span>
+    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
+      <span className="pixel-title text-xs w-32 shrink-0 text-right pt-1" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
+      <span className="pixel-body text-xl leading-tight" style={{ color: 'var(--t-text)' }}>{value}</span>
     </div>
   );
 }
@@ -42,9 +42,9 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 // ── Skill row ──────────────────────────────────────────────────────────────
 function SkillRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: '#2a1f0a' }}>
-      <span className="pixel-title text-xs w-32 shrink-0 text-right" style={{ color: '#9e7d40' }}>{label}</span>
-      <span className="pixel-body text-xl leading-relaxed" style={{ color: '#8ecae6' }}>{value}</span>
+    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
+      <span className="pixel-title text-xs w-32 shrink-0 text-right" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
+      <span className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-primary)' }}>{value}</span>
     </div>
   );
 }
@@ -64,16 +64,16 @@ function QuestEntry({
   return (
     <div
       className="rounded-lg p-5 space-y-3"
-      style={{ background: '#110e07', border: '1px solid #3d2e12' }}
+      style={{ background: 'var(--t-bg-card)', border: '1px solid var(--t-frame-line)' }}
     >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
         <div className="space-y-1">
-          <p className="pixel-title text-xs" style={{ color: '#e8c97a' }}>{title}</p>
-          <p className="pixel-body text-lg" style={{ color: '#c9a55c' }}>{company}</p>
+          <p className="pixel-title text-xs" style={{ color: 'var(--t-frame-light)' }}>{title}</p>
+          <p className="pixel-body text-lg" style={{ color: 'var(--t-frame)' }}>{company}</p>
         </div>
         <span
           className="pixel-body text-base px-2 py-0.5 rounded"
-          style={{ color: '#9e7d40', background: '#1a1208', border: '1px solid #3d2e12' }}
+          style={{ color: 'var(--t-frame-dark)', background: 'var(--t-bg-card)', border: '1px solid var(--t-frame-line)' }}
         >
           {dates}
         </span>
@@ -81,8 +81,8 @@ function QuestEntry({
       <ul className="space-y-2 pl-1">
         {achievements.map((item, i) => (
           <li key={i} className="flex items-start gap-2">
-            <span className="pixel-title text-xs mt-0.5 shrink-0" style={{ color: '#9be564' }}>+</span>
-            <span className="pixel-body text-lg text-slate-300 leading-relaxed">{item}</span>
+            <span className="pixel-title text-xs mt-0.5 shrink-0" style={{ color: 'var(--t-secondary)' }}>+</span>
+            <span className="pixel-body text-lg leading-relaxed" style={{ color: 'var(--t-text)' }}>{item}</span>
           </li>
         ))}
       </ul>
@@ -100,9 +100,9 @@ export default function ResumePage() {
         <div
           className="relative rounded-2xl p-6 md:p-8 space-y-8"
           style={{
-            background: '#0d0b06',
-            border: '2px solid #c9a55c',
-            boxShadow: '0 0 0 4px #3d2208, 0 0 0 6px #c9a55c44',
+            background: 'var(--t-frame-bg)',
+            border: '2px solid var(--t-frame)',
+            boxShadow: '0 0 0 4px var(--t-frame-outer), 0 0 0 6px color-mix(in srgb, var(--t-frame) 27%, transparent)',
           }}
         >
           <Corner pos="tl" />
@@ -115,14 +115,14 @@ export default function ResumePage() {
             <div className="text-center md:text-left">
               <p
                 className="pixel-title text-sm md:text-base tracking-widest"
-                style={{ color: '#e8c97a', textShadow: '0 0 16px #c9a55c88' }}
+                style={{ color: 'var(--t-frame-light)', textShadow: '0 0 16px color-mix(in srgb, var(--t-frame) 53%, transparent)' }}
               >
                 ◈ QUEST LOG ◈
               </p>
-              <p className="pixel-body text-xl text-slate-300 mt-1">
+              <p className="pixel-body text-xl mt-1" style={{ color: 'var(--t-text)' }}>
                 Fullstack Software Engineer &amp; Game Developer
               </p>
-              <p className="pixel-body text-base mt-0.5" style={{ color: '#9e7d40' }}>
+              <p className="pixel-body text-base mt-0.5" style={{ color: 'var(--t-frame-dark)' }}>
                 Guaruja, SP, Brazil &nbsp;|&nbsp; +55 (13) 98138-4361 &nbsp;|&nbsp; diegogpssth@gmail.com
               </p>
             </div>
@@ -132,18 +132,18 @@ export default function ResumePage() {
                 download
                 className="inline-flex items-center justify-center px-5 py-2 rounded-md pixel-title text-xs tracking-widest transition-all"
                 style={{
-                  color: '#e8c97a',
-                  background: '#110e07',
-                  border: '2px solid #c9a55c',
-                  boxShadow: '0 0 0 2px #3d2208',
+                  color: 'var(--t-frame-light)',
+                  background: 'var(--t-bg-card)',
+                  border: '2px solid var(--t-frame)',
+                  boxShadow: '0 0 0 2px var(--t-frame-outer)',
                 }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.background = '#1a1208';
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 0 2px #3d2208, 0 0 8px #c9a55c66';
+                  (e.currentTarget as HTMLAnchorElement).style.background = 'var(--t-frame-bg)';
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 0 2px var(--t-frame-outer), 0 0 8px color-mix(in srgb, var(--t-frame) 40%, transparent)';
                 }}
                 onMouseLeave={e => {
-                  (e.currentTarget as HTMLAnchorElement).style.background = '#110e07';
-                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 0 2px #3d2208';
+                  (e.currentTarget as HTMLAnchorElement).style.background = 'var(--t-bg-card)';
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 0 2px var(--t-frame-outer)';
                 }}
               >
                 Download Scroll
@@ -157,7 +157,7 @@ export default function ResumePage() {
             {/* ── Adventurer's Tale (full width) ── */}
             <div className="md:col-span-2">
               <SheetHeader>ADVENTURER'S TALE</SheetHeader>
-              <p className="pixel-body text-xl text-slate-300 leading-relaxed pl-1">
+              <p className="pixel-body text-xl leading-relaxed pl-1" style={{ color: 'var(--t-text)' }}>
                 Software Engineer with a unique foundation in game development. Currently building
                 high-performance, scalable fullstack applications, utilizing Go, Node.js, and TypeScript for
                 robust backends, alongside React and React Native for intuitive frontends. Looking to combine
@@ -190,7 +190,7 @@ export default function ResumePage() {
                       target="_blank"
                       rel="noreferrer"
                       className="hover:underline"
-                      style={{ color: '#8ecae6' }}
+                      style={{ color: 'var(--t-primary)' }}
                     >
                       diego-goncalves-piovezan
                     </a>
@@ -204,7 +204,7 @@ export default function ResumePage() {
                       target="_blank"
                       rel="noreferrer"
                       className="hover:underline"
-                      style={{ color: '#8ecae6' }}
+                      style={{ color: 'var(--t-primary)' }}
                     >
                       DevDiegolas
                     </a>

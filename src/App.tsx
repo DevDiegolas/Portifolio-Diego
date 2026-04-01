@@ -4,6 +4,7 @@ import ResumePage from './components/ResumePage';
 import GamesPage from './components/GamesPage';
 import AboutPage from './components/AboutPage';
 import GameLoader from './components/GameLoader';
+import { ThemeProvider } from './ThemeContext';
 
 const ROUTE_ORDER: Record<string, number> = {
   '/': 0,
@@ -85,22 +86,22 @@ export default function App() {
   if (path === '/games') content = <GamesPage />;
   if (path === '/about') content = <AboutPage />;
 
-  if (!loaded) {
-    return (
-      <GameLoader
-        onComplete={() => {
-          sessionStorage.setItem('portfolio_loaded', '1');
-          setLoaded(true);
-        }}
-      />
-    );
-  }
-
   return (
-    <div className="h-screen overflow-hidden font-sans text-gray-200">
-      <main key={path} className={`page-transition ${direction === 'forward' ? 'page-transition-forward' : 'page-transition-back'}`}>
-        {content}
-      </main>
-    </div>
+    <ThemeProvider>
+      <div className="h-screen overflow-hidden font-sans" style={{ color: 'var(--t-text)' }}>
+        {!loaded ? (
+          <GameLoader
+            onComplete={() => {
+              sessionStorage.setItem('portfolio_loaded', '1');
+              setLoaded(true);
+            }}
+          />
+        ) : (
+          <main key={path} className={`page-transition ${direction === 'forward' ? 'page-transition-forward' : 'page-transition-back'}`}>
+            {content}
+          </main>
+        )}
+      </div>
+    </ThemeProvider>
   );
 }

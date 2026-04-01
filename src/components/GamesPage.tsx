@@ -1,41 +1,43 @@
 import { useEffect, useRef, useState } from 'react';
 import TerminalShell from './TerminalShell';
+import { useTheme } from '../ThemeContext';
 import bgPotato from '../assets/bg-potato.png';
 import bgSolo from '../assets/bg-solo.png';
 import iconPotato from '../assets/icon-potato.png';
 import iconSolo from '../assets/icon-solo.png';
 
-const games = [
-  {
-    id: 'potato-clicker',
-    title: 'Potato Clicker',
-    status: 'Coming Soon',
-    genre: 'Idle / Clicker',
-    description:
-      'Idle progression with upgrades, economy loops, and long-session retention mechanics.',
-    bg: bgPotato,
-    icon: iconPotato,
-    accentFrom: '#a3e635',
-    accentTo: '#fde047',
-  },
-  {
-    id: 'solo-blocking',
-    title: 'Solo Blocking',
-    status: 'Coming Soon',
-    genre: 'Action / Combat',
-    description:
-      'Fast combat prototype focused on responsiveness, movement, and impact feedback.',
-    bg: bgSolo,
-    icon: iconSolo,
-    accentFrom: '#e879f9',
-    accentTo: '#818cf8',
-  },
-];
-
 export default function GamesPage() {
+  const { theme } = useTheme();
   const [selected, setSelected] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
   const rouletteRef = useRef<HTMLDivElement>(null);
+
+  const games = [
+    {
+      id: 'potato-clicker',
+      title: 'Potato Clicker',
+      status: 'Coming Soon',
+      genre: 'Idle / Clicker',
+      description:
+        'Idle progression with upgrades, economy loops, and long-session retention mechanics.',
+      bg: bgPotato,
+      icon: iconPotato,
+      accentFrom: theme.colors.secondary,
+      accentTo: theme.colors.tertiary,
+    },
+    {
+      id: 'solo-blocking',
+      title: 'Solo Blocking',
+      status: 'Coming Soon',
+      genre: 'Action / Combat',
+      description:
+        'Fast combat prototype focused on responsiveness, movement, and impact feedback.',
+      bg: bgSolo,
+      icon: iconSolo,
+      accentFrom: theme.colors.quaternary,
+      accentTo: theme.colors.fifth,
+    },
+  ];
 
   const activeGame = games[selected];
 
@@ -80,8 +82,8 @@ export default function GamesPage() {
 
         {/* Main container */}
         <div
-          className="relative overflow-hidden rounded-xl border border-gray-800 min-h-[70vh]"
-          style={{ isolation: 'isolate' }}
+          className="relative overflow-hidden rounded-xl border min-h-[70vh]"
+          style={{ borderColor: 'color-mix(in srgb, var(--t-primary) 16%, transparent)', isolation: 'isolate' }}
         >
           {/* ── Blurred background image ── */}
           {games.map((game, i) => (
@@ -112,7 +114,7 @@ export default function GamesPage() {
           <div
             className="absolute inset-0 pointer-events-none opacity-[0.06]"
             style={{
-              backgroundImage: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 4px)',
+              backgroundImage: 'repeating-linear-gradient(0deg, color-mix(in srgb, var(--t-text) 35%, transparent) 0px, color-mix(in srgb, var(--t-text) 35%, transparent) 1px, transparent 1px, transparent 4px)',
               zIndex: 1,
             }}
           />
@@ -139,11 +141,11 @@ export default function GamesPage() {
                   className="transition-all duration-300"
                   style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(6px)' : 'translateY(0)' }}
                 >
-                  <h3 className="pixel-title text-3xl md:text-5xl text-white leading-tight">
+                  <h3 className="pixel-title text-3xl md:text-5xl leading-tight" style={{ color: 'var(--t-text)' }}>
                     {activeGame.title}
                   </h3>
 
-                  <p className="pixel-body text-xl md:text-2xl text-slate-300 mt-5 max-w-lg leading-relaxed">
+                  <p className="pixel-body text-xl md:text-2xl mt-5 max-w-lg leading-relaxed" style={{ color: 'var(--t-text-muted)' }}>
                     {activeGame.description}
                   </p>
                 </div>
@@ -165,8 +167,8 @@ export default function GamesPage() {
                 <button
                   type="button"
                   disabled
-                  className="pixel-title text-xs px-6 py-3 rounded-md border cursor-not-allowed opacity-50 text-white"
-                  style={{ borderColor: `${activeGame.accentFrom}44`, background: `${activeGame.accentFrom}22` }}
+                  className="pixel-title text-xs px-6 py-3 rounded-md border cursor-not-allowed opacity-50"
+                  style={{ borderColor: `${activeGame.accentFrom}44`, background: `${activeGame.accentFrom}22`, color: 'var(--t-text)' }}
                 >
                   ▶ Play Game
                 </button>
@@ -176,20 +178,21 @@ export default function GamesPage() {
             {/* RIGHT — Roulette wheel */}
             <div
               ref={rouletteRef}
-              className="border-l border-white/10 bg-black/40 backdrop-blur-sm flex flex-col"
-              style={{ overscrollBehavior: 'contain' }}
+              className="border-l backdrop-blur-sm flex flex-col"
+              style={{ overscrollBehavior: 'contain', borderColor: 'color-mix(in srgb, var(--t-text) 12%, transparent)', background: 'color-mix(in srgb, var(--t-bg-darker) 70%, transparent)' }}
             >
               {/* Header */}
-              <div className="px-4 py-4 border-b border-white/10 flex items-center justify-between">
-                <p className="pixel-title text-xs text-slate-400 tracking-widest uppercase">Select</p>
-                <p className="pixel-body text-base text-slate-500">{selected + 1} / {games.length}</p>
+              <div className="px-4 py-4 border-b flex items-center justify-between" style={{ borderColor: 'color-mix(in srgb, var(--t-text) 12%, transparent)' }}>
+                <p className="pixel-title text-xs tracking-widest uppercase" style={{ color: 'var(--t-text-muted)' }}>Select</p>
+                <p className="pixel-body text-base" style={{ color: 'var(--t-text-dim)' }}>{selected + 1} / {games.length}</p>
               </div>
 
               {/* Arrow up */}
               <button
                 type="button"
                 onClick={prevGame}
-                className="w-full py-2 text-slate-500 hover:text-white transition-colors text-xs pixel-title hover:bg-white/5"
+                className="w-full py-2 transition-colors text-xs pixel-title"
+                style={{ color: 'var(--t-text-dim)' }}
               >
                 ▲
               </button>
@@ -208,8 +211,8 @@ export default function GamesPage() {
                       onClick={() => selectGame(index)}
                       className="text-left rounded-xl border transition-all duration-300 px-3 py-3 flex items-center gap-3"
                       style={{
-                        borderColor: isActive ? `${game.accentFrom}88` : 'rgba(255,255,255,0.08)',
-                        background: isActive ? `${game.accentFrom}18` : 'rgba(0,0,0,0.3)',
+                        borderColor: isActive ? `${game.accentFrom}88` : 'color-mix(in srgb, var(--t-text) 10%, transparent)',
+                        background: isActive ? `${game.accentFrom}18` : 'color-mix(in srgb, var(--t-bg-darker) 78%, transparent)',
                         opacity: isActive ? 1 : isAdjacent ? 0.55 : 0.3,
                         transform: isActive ? 'scale(1)' : 'scale(0.95)',
                         boxShadow: isActive ? `0 0 20px ${game.accentFrom}33` : 'none',
@@ -218,17 +221,17 @@ export default function GamesPage() {
                       {/* Icon */}
                       <div
                         className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border"
-                        style={{ borderColor: isActive ? `${game.accentFrom}55` : 'rgba(255,255,255,0.1)' }}
+                        style={{ borderColor: isActive ? `${game.accentFrom}55` : 'color-mix(in srgb, var(--t-text) 12%, transparent)' }}
                       >
                         <img src={game.icon} alt={game.title} className="w-full h-full object-cover" />
                       </div>
 
                       {/* Text */}
                       <div className="min-w-0">
-                        <p className="pixel-title text-xs text-white truncate">{game.title}</p>
+                        <p className="pixel-title text-xs truncate" style={{ color: 'var(--t-text)' }}>{game.title}</p>
                         <p
                           className="pixel-body text-sm mt-0.5 truncate"
-                          style={{ color: isActive ? game.accentFrom : '#94a3b8' }}
+                          style={{ color: isActive ? game.accentFrom : theme.colors.textMuted }}
                         >
                           {game.genre}
                         </p>
@@ -250,14 +253,15 @@ export default function GamesPage() {
               <button
                 type="button"
                 onClick={nextGame}
-                className="w-full py-2 text-slate-500 hover:text-white transition-colors text-xs pixel-title hover:bg-white/5"
+                className="w-full py-2 transition-colors text-xs pixel-title"
+                style={{ color: 'var(--t-text-dim)' }}
               >
                 ▼
               </button>
 
               {/* Scroll hint */}
-              <div className="px-4 py-3 border-t border-white/10 text-center">
-                <p className="pixel-body text-sm text-slate-600">scroll or ↑↓</p>
+              <div className="px-4 py-3 border-t text-center" style={{ borderColor: 'color-mix(in srgb, var(--t-text) 12%, transparent)' }}>
+                <p className="pixel-body text-sm" style={{ color: 'var(--t-text-dim)' }}>scroll or ↑↓</p>
               </div>
             </div>
           </div>

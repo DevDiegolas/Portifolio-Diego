@@ -13,11 +13,12 @@ const MOST_USED = [
   { name: 'node.js',    icon: `${CDN}/nodejs/nodejs-original.svg` },
   { name: 'typescript', icon: `${CDN}/typescript/typescript-original.svg` },
   { name: 'go',         icon: `${CDN}/go/go-original.svg` },
+  { name: 'docker',     icon: `${CDN}/docker/docker-original.svg` },
 ];
 const FAMILIAR = [
   { name: 'godot',      icon: `${CDN}/godot/godot-original.svg` },
   { name: 'unity',      icon: `${CDN}/unity/unity-original.svg` },
-  { name: 'postgresql', icon: `${CDN}/postgresql/postgresql-original.svg` },
+  { name: 'GameMaker',  icon: `https://cdn.simpleicons.org/gamemaker/00b96b` },
   { name: 'aws',        icon: `${CDN}/amazonwebservices/amazonwebservices-original-wordmark.svg` },
 ];
 
@@ -25,28 +26,39 @@ const FAMILIAR = [
 function TechTree({ label, items }: { label: string; items: typeof MOST_USED }) {
   return (
     <div>
-      <p className="pixel-title text-xs" style={{ color: '#9be564' }}>{label}</p>
+      <p className="pixel-title text-xs" style={{ color: 'var(--t-secondary)' }}>{label}</p>
       {items.map((item, i) => (
         <div key={item.name} className="flex items-center gap-2 mt-1.5">
-          <span className="pixel-body text-lg text-slate-600 select-none">
+          <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dim)' }}>
             {i === items.length - 1 ? '└──' : '├──'}
           </span>
           <img src={item.icon} alt={item.name} className="w-4 h-4 shrink-0" />
-          <span className="pixel-body text-xl text-slate-300">{item.name}</span>
+          <span className="pixel-body text-xl" style={{ color: 'var(--t-text)' }}>{item.name}</span>
         </div>
       ))}
     </div>
   );
 }
 
+const LEARNING = [
+  { name: 'Machine Learning', icon: `${CDN}/tensorflow/tensorflow-original.svg` },
+  { name: 'AI Agents',        icon: 'https://img.icons8.com/fluency/48/robot-2.png' },
+  { name: 'Automation',       icon: `${CDN}/github/github-original.svg` },
+];
+
 function LearningTree() {
   return (
     <div>
-      <p className="pixel-title text-xs" style={{ color: '#9be564' }}>currently-learning</p>
-      <div className="flex items-center gap-2 mt-1.5">
-        <span className="pixel-body text-lg text-slate-600 select-none">└──</span>
-        <span className="pixel-body text-xl text-slate-300">shaders, new architectures…</span>
-      </div>
+      <p className="pixel-title text-xs" style={{ color: 'var(--t-secondary)' }}>currently-learning</p>
+      {LEARNING.map((item, i) => (
+        <div key={item.name} className="flex items-center gap-2 mt-1.5">
+          <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dim)' }}>
+            {i === LEARNING.length - 1 ? '└──' : '├──'}
+          </span>
+          <img src={item.icon} alt={item.name} className="w-4 h-4 shrink-0" />
+          <span className="pixel-body text-xl" style={{ color: 'var(--t-text)' }}>{item.name}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -88,7 +100,7 @@ function GameWindow({
       style={{
         borderRadius: 4,
         border: `1px solid ${hovered ? accentColor + '50' : accentColor + '25'}`,
-        background: '#06070d',
+        background: 'var(--t-bg-card)',
         textDecoration: 'none',
         transition: 'border-color 0.2s ease',
       }}
@@ -98,10 +110,10 @@ function GameWindow({
       {/* Window title bar */}
       <div
         className="flex items-center gap-2 px-3 py-1.5"
-        style={{ background: '#08090e', borderBottom: `1px solid ${accentColor}18` }}
+        style={{ background: 'var(--t-bg-bar)', borderBottom: `1px solid ${accentColor}18` }}
       >
         <span className="pixel-title text-xs" style={{ color: `${accentColor}77` }}>▶</span>
-        <span className="pixel-title" style={{ fontSize: '0.6rem', color: '#3a4556' }}>{filename}</span>
+        <span className="pixel-title" style={{ fontSize: '0.6rem', color: 'var(--t-text-dimmer)' }}>{filename}</span>
         <div className="flex-1" />
         {tags.map(t => (
           <span
@@ -136,8 +148,9 @@ function GameWindow({
         <div className="flex-1 min-w-0">
           <p className="pixel-title mb-1" style={{ fontSize: '0.58rem', color: accentColor, letterSpacing: '0.08em' }}>{title}</p>
           <p
-            className="pixel-body text-xl text-slate-500 leading-snug"
+            className="pixel-body text-xl leading-snug"
             style={{
+              color: 'var(--t-text-dim)',
               display: '-webkit-box',
               WebkitLineClamp: 2,
               WebkitBoxOrient: 'vertical',
@@ -165,13 +178,13 @@ function GameWindow({
           className="px-4 pb-5 pt-1 space-y-3"
           style={{ borderTop: `1px solid ${accentColor}18` }}
         >
-          <p className="pixel-body text-xl text-slate-400 leading-relaxed">{expandedText}</p>
-          <p className="pixel-body text-xl text-slate-500 leading-relaxed">
+          <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text-muted)' }}>{expandedText}</p>
+          <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text-dim)' }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
             ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
             ullamco laboris nisi ut aliquip ex ea commodo consequat.
           </p>
-          <p className="pixel-body text-xl text-slate-500 leading-relaxed">
+          <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text-dim)' }}>
             Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
             nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
             deserunt mollit anim id est laborum.
@@ -202,15 +215,15 @@ function GameWindow({
 function Cmd({ text }: { text: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
-      <span className="pixel-title text-xs" style={{ color: '#8ecae6' }}>{text}</span>
+      <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+      <span className="pixel-title text-xs" style={{ color: 'var(--t-primary)' }}>{text}</span>
     </div>
   );
 }
 
 function Out({ children }: { children: React.ReactNode }) {
   return (
-    <div className="pixel-body text-xl text-slate-300 leading-snug">{children}</div>
+    <div className="pixel-body text-xl leading-snug" style={{ color: 'var(--t-text)' }}>{children}</div>
   );
 }
 
@@ -218,7 +231,7 @@ function StaticIntro() {
   return (
     <div className="space-y-0">
       <Cmd text="whoami" />
-      <Out>Hi, I&apos;m <span style={{ color: '#8ecae6' }}>Diego.</span></Out>
+      <Out>Hi, I&apos;m <span style={{ color: 'var(--t-primary)' }}>Diego.</span></Out>
       <div className="h-2" />
       <Cmd text="cat role.txt" />
       <Out>Fullstack Software Engineer &amp; Game Developer</Out>
@@ -245,7 +258,7 @@ type SeqItem =
 
 const SEQUENCE: SeqItem[] = [
   { type: 'cmd',   text: 'whoami' },
-  { type: 'out',   node: <span>Hi, I&apos;m <span style={{ color: '#8ecae6' }}>Diego.</span></span> },
+  { type: 'out',   node: <span>Hi, I&apos;m <span style={{ color: 'var(--t-primary)' }}>Diego.</span></span> },
   { type: 'blank' },
   { type: 'pause', ms: 280 },
   { type: 'cmd',   text: 'cat role.txt' },
@@ -273,7 +286,7 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
   useEffect(() => {
     const id = setInterval(() => setBlink(b => !b), 530);
     return () => clearInterval(id);
-  }, []);
+  }, [onDone, onScroll]);
 
   useEffect(() => {
     let cancelled = false;
@@ -290,7 +303,7 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
           await delay(item.ms);
         } else if (item.type === 'out') {
           setLines(l => [...l, (
-            <div key={`o${i}`} className="pixel-body text-xl text-slate-300 leading-snug">
+            <div key={`o${i}`} className="pixel-body text-xl leading-snug" style={{ color: 'var(--t-text)' }}>
               {item.node}
             </div>
           )]);
@@ -308,8 +321,8 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
           setCurrentCmd('');
           setLines(l => [...l, (
             <div key={`c${i}`} className="flex items-center gap-2">
-              <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
-              <span className="pixel-title text-xs"             style={{ color: '#8ecae6' }}>{committed}</span>
+              <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+              <span className="pixel-title text-xs"             style={{ color: 'var(--t-primary)' }}>{committed}</span>
             </div>
           )]);
           onScroll();
@@ -322,17 +335,17 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
 
     run();
     return () => { cancelled = true; };
-  }, []);
+  }, [onDone, onScroll]);
 
   return (
     <div>
       {lines}
       <div className="flex items-center gap-2 mt-1">
-        <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
-        <span className="pixel-title text-xs"             style={{ color: '#8ecae6' }}>{currentCmd}</span>
+        <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+        <span className="pixel-title text-xs"             style={{ color: 'var(--t-primary)' }}>{currentCmd}</span>
         <span
           className="inline-block w-1.5 h-3.5 align-middle"
-          style={{ background: (typing || blink) ? '#8ecae6' : 'transparent' }}
+          style={{ background: (typing || blink) ? 'var(--t-primary)' : 'transparent' }}
         />
       </div>
     </div>
@@ -351,7 +364,7 @@ export default function Home() {
   // Mark intro as seen immediately so back-navigation skips it
   useEffect(() => {
     if (!introSeen) sessionStorage.setItem(INTRO_KEY, '1');
-  }, []);
+  }, [introSeen]);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -375,7 +388,7 @@ export default function Home() {
         {showContent && (
           <FadeIn delay={introSeen ? 0 : 80}>
             <div className="mt-3 space-y-2">
-              <p className="pixel-body text-lg select-none" style={{ color: '#2a3544' }}>
+              <p className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dimmer)' }}>
                 {'  drwxr-xr-x  2  diego  staff'}
               </p>
 
@@ -403,8 +416,8 @@ export default function Home() {
             </div>
 
             {/* Contacts */}
-            <div className="mt-6 pt-4" style={{ borderTop: '1px solid rgba(142,202,230,0.06)' }}>
-              <p className="pixel-title mb-3" style={{ fontSize: '0.58rem', color: '#2e3d52', letterSpacing: '0.1em' }}># contacts</p>
+            <div className="mt-6 pt-4" style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 6%, transparent)' }}>
+              <p className="pixel-title mb-3" style={{ fontSize: '0.58rem', color: 'var(--t-text-dimmer)', letterSpacing: '0.1em' }}># contacts</p>
               <div className="space-y-1.5">
                 {[
                   { key: 'github',   val: 'DevDiegolas',                    href: 'https://github.com/DevDiegolas',                              ext: true  },
@@ -412,16 +425,16 @@ export default function Home() {
                   { key: 'resume',   val: '~/resume',                        href: '/resume',                                                     ext: false },
                 ].map(({ key, val, href, ext }) => (
                   <div key={key} className="flex items-center gap-2">
-                    <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52', width: 62, textAlign: 'right' }}>{key}</span>
-                    <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52' }}>→</span>
+                    <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dimmer)', width: 62, textAlign: 'right' }}>{key}</span>
+                    <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dimmer)' }}>→</span>
                     <a
                       href={href}
                       target={ext ? '_blank' : undefined}
                       rel={ext ? 'noreferrer' : undefined}
                       className="pixel-body text-xl transition-colors"
-                      style={{ color: '#4a5f78' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#cbd5e1'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#4a5f78'; }}
+                      style={{ color: 'var(--t-text-dim)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--t-text)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--t-text-dim)'; }}
                     >{val}</a>
                   </div>
                 ))}

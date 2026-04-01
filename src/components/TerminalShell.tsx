@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { THEMES, useTheme } from '../ThemeContext';
 
 const NAV = [
   { label: '~/home',    path: '/home'   },
@@ -16,6 +17,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
   ({ children, currentPath = '/' }, externalRef) => {
     const internalRef = useRef<HTMLDivElement>(null);
     const inputRef    = useRef<HTMLInputElement>(null);
+    const { theme, setTheme } = useTheme();
 
     // Merge external ref (used by Home for scroll-during-intro) with internal
     const setBodyRef = useCallback(
@@ -56,50 +58,103 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
 
       if (Object.prototype.hasOwnProperty.call(navMap, cmd)) {
         if (navMap[cmd] === currentPath) {
-          setCmdLog(h => [...h, { cmd: raw, out: <span className="pixel-body text-xl text-slate-500">Already here.</span> }]);
+          setCmdLog(h => [...h, { cmd: raw, out: <span className="pixel-body text-xl" style={{ color: 'var(--t-text-dim)' }}>Already here.</span> }]);
           return;
         }
         setCmdLog(h => [...h, {
           cmd: raw,
-          out: <span className="pixel-body text-xl" style={{ color: '#9be564' }}>→ navigating to {navMap[cmd]}…</span>,
+          out: <span className="pixel-body text-xl" style={{ color: 'var(--t-secondary)' }}>→ navigating to {navMap[cmd]}…</span>,
         }]);
         setTimeout(() => gotoPage(navMap[cmd]), 320);
         return;
       }
 
+      // ── Theme commands ──
+      if (cmd === 'theme' || cmd === 'theme list' || cmd === 'themes' || cmd === 'color' || cmd === 'color list' || cmd === 'colors') {
+        setCmdLog(h => [...h, {
+          cmd: raw,
+          out: (
+            <div className="pixel-body text-xl space-y-0.5" style={{ color: 'var(--t-text-muted)' }}>
+              <p style={{ color: 'var(--t-tertiary)' }}>Available themes:</p>
+              {THEMES.map(t => (
+                <p key={t.name}>
+                  <span style={{ color: t.name === theme.name ? 'var(--t-secondary)' : 'var(--t-primary)' }}>
+                    {t.name === theme.name ? '● ' : '  '}{t.name}
+                  </span>
+                  <span style={{ color: 'var(--t-text-dim)' }}> — {t.label}</span>
+                </p>
+              ))}
+              <p className="mt-1" style={{ color: 'var(--t-text-dim)' }}>
+                Usage: <span style={{ color: 'var(--t-primary)' }}>theme {'<name>'}</span> or <span style={{ color: 'var(--t-primary)' }}>color {'<name>'}</span>
+              </p>
+            </div>
+          ),
+        }]);
+        return;
+      }
+
+      if (cmd.startsWith('theme ') || cmd.startsWith('color ')) {
+        const themeName = cmd.slice(6).trim();
+        const found = THEMES.find(t => t.name === themeName);
+        if (found) {
+          setTheme(found.name);
+          setCmdLog(h => [...h, {
+            cmd: raw,
+            out: (
+              <span className="pixel-body text-xl" style={{ color: 'var(--t-secondary)' }}>
+                Theme changed to <span style={{ color: 'var(--t-primary)' }}>{found.label}</span>.
+              </span>
+            ),
+          }]);
+        } else {
+          setCmdLog(h => [...h, {
+            cmd: raw,
+            out: (
+              <span className="pixel-body text-xl" style={{ color: 'var(--t-error)' }}>
+                Unknown theme: <span style={{ color: 'var(--t-error-light)' }}>{themeName}</span>
+                {' '}— type <span style={{ color: 'var(--t-primary)' }}>color list</span> to see options.
+              </span>
+            ),
+          }]);
+        }
+        return;
+      }
+
       const responses: Record<string, React.ReactNode> = {
         help: (
-          <div className="pixel-body text-xl text-slate-400 space-y-0.5">
-            <p><span style={{ color: '#8ecae6' }}>about</span>   — about page</p>
-            <p><span style={{ color: '#8ecae6' }}>games</span>   — games showcase</p>
-            <p><span style={{ color: '#8ecae6' }}>resume</span>  — résumé</p>
-            <p><span style={{ color: '#8ecae6' }}>home</span>    — home terminal</p>
-            <p><span style={{ color: '#8ecae6' }}>ls</span>      — list pages</p>
-            <p><span style={{ color: '#8ecae6' }}>whoami</span>  — who is Diego</p>
-            <p><span style={{ color: '#8ecae6' }}>clear</span>   — clear history</p>
-            <p><span style={{ color: '#8ecae6' }}>pwd</span>     — current path</p>
+          <div className="pixel-body text-xl space-y-0.5" style={{ color: 'var(--t-text-muted)' }}>
+            <p><span style={{ color: 'var(--t-primary)' }}>about</span>   — about page</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>games</span>   — games showcase</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>resume</span>  — résumé</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>home</span>    — home terminal</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>ls</span>      — list pages</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>whoami</span>  — who is Diego</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>theme</span>   — change color theme</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>color</span>   — alias for theme command</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>clear</span>   — clear history</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>pwd</span>     — current path</p>
           </div>
         ),
         whoami: (
-          <span className="pixel-body text-xl text-slate-300">
+          <span className="pixel-body text-xl" style={{ color: 'var(--t-text)' }}>
             Diego Gonçalves Piovezan Santana — Fullstack Engineer &amp; Game Developer.
           </span>
         ),
         ls: (
           <div className="flex gap-5 pixel-body text-xl">
-            <a href="/"       style={{ color: '#8ecae6' }} className="hover:underline">home/</a>
-            <a href="/about"  style={{ color: '#8ecae6' }} className="hover:underline">about/</a>
-            <a href="/games"  style={{ color: '#8ecae6' }} className="hover:underline">games/</a>
-            <a href="/resume" style={{ color: '#8ecae6' }} className="hover:underline">resume/</a>
+            <a href="/"       style={{ color: 'var(--t-primary)' }} className="hover:underline">home/</a>
+            <a href="/about"  style={{ color: 'var(--t-primary)' }} className="hover:underline">about/</a>
+            <a href="/games"  style={{ color: 'var(--t-primary)' }} className="hover:underline">games/</a>
+            <a href="/resume" style={{ color: 'var(--t-primary)' }} className="hover:underline">resume/</a>
           </div>
         ),
-        pwd: <span className="pixel-body text-xl" style={{ color: '#8ecae6' }}>{currentPath === '/' ? '/home' : currentPath}</span>,
+        pwd: <span className="pixel-body text-xl" style={{ color: 'var(--t-primary)' }}>{currentPath === '/' ? '/home' : currentPath}</span>,
       };
 
       const out = responses[cmd] ?? (
-        <span className="pixel-body text-xl" style={{ color: '#f87171' }}>
-          command not found: <span style={{ color: '#fca5a5' }}>{raw}</span>
-          {' '}— type <span style={{ color: '#8ecae6' }}>help</span> for commands.
+        <span className="pixel-body text-xl" style={{ color: 'var(--t-error)' }}>
+          command not found: <span style={{ color: 'var(--t-error-light)' }}>{raw}</span>
+          {' '}— type <span style={{ color: 'var(--t-primary)' }}>help</span> for commands.
         </span>
       );
 
@@ -132,17 +187,17 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
     };
 
     return (
-      <div className="h-screen flex flex-col overflow-hidden" style={{ background: '#0a0c14' }}>
+      <div className="h-screen flex flex-col overflow-hidden" style={{ background: 'var(--t-bg)' }}>
 
         {/* ── Title bar ── */}
         <div
           className="flex items-center gap-2 px-4 py-3 shrink-0"
-          style={{ borderBottom: '1px solid rgba(142,202,230,0.12)', background: '#07080f' }}
+          style={{ borderBottom: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
         >
           <span className="w-3 h-3 rounded-full bg-red-500/70" />
           <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
           <span className="w-3 h-3 rounded-full bg-green-500/70" />
-          <span className="pixel-title text-xs text-slate-600 ml-2 mr-auto">diego@portfolio:~$</span>
+          <span className="pixel-title text-xs ml-2 mr-auto" style={{ color: 'var(--t-text-dim)' }}>diego@portfolio:~$</span>
 
           <nav className="hidden sm:flex items-center gap-4">
             {NAV.map(n => (
@@ -150,7 +205,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
                 key={n.path}
                 href={n.path}
                 className="pixel-title text-xs transition-colors hover:text-white"
-                style={{ color: n.path === currentPath ? '#8ecae6' : '#475569' }}
+                style={{ color: n.path === currentPath ? 'var(--t-primary)' : 'var(--t-text-dim)' }}
               >
                 {n.label}
               </a>
@@ -168,8 +223,8 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
               {cmdLog.map((entry, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-2">
-                    <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
-                    <span className="pixel-title text-xs" style={{ color: '#8ecae6' }}>{entry.cmd}</span>
+                    <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+                    <span className="pixel-title text-xs" style={{ color: 'var(--t-primary)' }}>{entry.cmd}</span>
                   </div>
                   <div className="mt-1 ml-4">{entry.out}</div>
                 </div>
@@ -181,17 +236,17 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
         {/* ── Fixed command input ── */}
         <div
           className="flex items-center gap-2 px-6 py-4 shrink-0"
-          style={{ borderTop: '1px solid rgba(142,202,230,0.12)', background: '#07080f' }}
+          style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
           onClick={() => inputRef.current?.focus()}
         >
-          <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
+          <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
           <input
             ref={inputRef}
             value={value}
             onChange={e => { setValue(e.target.value); setHistIdx(-1); }}
             onKeyDown={onKeyDown}
             className="flex-1 bg-transparent outline-none pixel-title text-xs"
-            style={{ color: '#8ecae6', caretColor: '#8ecae6' }}
+            style={{ color: 'var(--t-primary)', caretColor: 'var(--t-primary)' }}
             placeholder="type a command… (try 'help')"
             spellCheck={false}
             autoComplete="off"

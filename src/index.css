@@ -7,6 +7,31 @@
   --pixel-yellow: #ffd166;
   --pixel-pink: #f497c2;
   --pixel-cursor: url("/cursor-stardew-brown.svg") 2 2;
+
+  /* Theme variables — overridden at runtime by ThemeContext */
+  --t-primary: #8ecae6;
+  --t-secondary: #9be564;
+  --t-tertiary: #ffd166;
+  --t-quaternary: #f497c2;
+  --t-fifth: #a78bfa;
+  --t-bg: #0a0c14;
+  --t-bg-card: #06070d;
+  --t-bg-bar: #07080f;
+  --t-bg-darker: #06070e;
+  --t-text: #cbd5e1;
+  --t-text-muted: #94a3b8;
+  --t-text-dim: #475569;
+  --t-text-dimmer: #2e3d52;
+  --t-prompt: #4ade80;
+  --t-error: #f87171;
+  --t-error-light: #fca5a5;
+  --t-frame: #c9a55c;
+  --t-frame-bg: #0d0b06;
+  --t-frame-light: #e8c97a;
+  --t-frame-dark: #9e7d40;
+  --t-frame-line: #3d2e12;
+  --t-frame-line-dark: #2a1f0a;
+  --t-frame-outer: #3d2208;
 }
 
 html,
@@ -38,23 +63,23 @@ label {
 }
 
 .pixel-cyan {
-  color: var(--pixel-cyan);
-  text-shadow: 0 0 6px rgb(142 202 230 / 0.2);
+  color: var(--t-primary);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--t-primary) 20%, transparent);
 }
 
 .pixel-green {
-  color: var(--pixel-green);
-  text-shadow: 0 0 6px rgb(155 229 100 / 0.2);
+  color: var(--t-secondary);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--t-secondary) 20%, transparent);
 }
 
 .pixel-yellow {
-  color: var(--pixel-yellow);
-  text-shadow: 0 0 6px rgb(255 209 102 / 0.2);
+  color: var(--t-tertiary);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--t-tertiary) 20%, transparent);
 }
 
 .pixel-pink {
-  color: var(--pixel-pink);
-  text-shadow: 0 0 6px rgb(244 151 194 / 0.2);
+  color: var(--t-quaternary);
+  text-shadow: 0 0 6px color-mix(in srgb, var(--t-quaternary) 20%, transparent);
 }
 
 .page-transition {
