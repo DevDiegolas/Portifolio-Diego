@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import TerminalShell from './TerminalShell';
 import { useTheme } from '../ThemeContext';
 import bgPotato from '../assets/bg-potato.png';
 import bgSolo from '../assets/bg-solo.png';
@@ -77,8 +76,7 @@ export default function GamesPage() {
   }, [selected]);
 
   return (
-    <TerminalShell currentPath="/games">
-      <section className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 w-full">
+    <section className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 w-full">
 
         {/* Main container */}
         <div
@@ -267,6 +265,5 @@ export default function GamesPage() {
           </div>
         </div>
       </section>
-    </TerminalShell>
   );
 }

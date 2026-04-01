@@ -4,6 +4,7 @@ import ResumePage from './components/ResumePage';
 import GamesPage from './components/GamesPage';
 import AboutPage from './components/AboutPage';
 import GameLoader from './components/GameLoader';
+import TerminalShell from './components/TerminalShell';
 import { ThemeProvider } from './ThemeContext';
 
 const ROUTE_ORDER: Record<string, number> = {
@@ -120,25 +121,27 @@ export default function App() {
             }}
           />
         ) : (
-          <div className="relative h-full">
-            {/* Outgoing page — animates out, removed after transition */}
-            {prev && (
-              <main
-                key={`out-${prev.path}`}
-                className={`absolute inset-0 page-exit ${prev.dir === 'forward' ? 'page-exit-forward' : 'page-exit-back'}`}
-                style={{ pointerEvents: 'none' }}
+          <TerminalShell currentPath={path}>
+            <div className="relative h-full overflow-hidden">
+              {/* Outgoing page — animates out, removed after transition */}
+              {prev && (
+                <div
+                  key={`out-${prev.path}`}
+                  className={`absolute inset-0 overflow-y-auto page-exit ${prev.dir === 'forward' ? 'page-exit-forward' : 'page-exit-back'}`}
+                  style={{ pointerEvents: 'none' }}
+                >
+                  {pageFor(prev.path)}
+                </div>
+              )}
+              {/* Incoming page — animates in */}
+              <div
+                key={`in-${path}`}
+                className={`absolute inset-0 overflow-y-auto ${prev ? `page-enter ${direction === 'forward' ? 'page-enter-forward' : 'page-enter-back'}` : ''}`}
               >
-                {pageFor(prev.path)}
-              </main>
-            )}
-            {/* Incoming page — animates in */}
-            <main
-              key={`in-${path}`}
-              className={`absolute inset-0 page-enter ${direction === 'forward' ? 'page-enter-forward' : 'page-enter-back'}`}
-            >
-              {pageFor(path)}
-            </main>
-          </div>
+                {pageFor(path)}
+              </div>
+            </div>
+          </TerminalShell>
         )}
       </div>
     </ThemeProvider>

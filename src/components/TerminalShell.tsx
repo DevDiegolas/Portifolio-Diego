@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { THEMES, useTheme } from '../ThemeContext';
+import { ShellScrollContext } from '../ShellScrollContext';
 
 const NAV = [
-  { label: '~/home',    path: '/home'   },
+  { label: '~/home',    path: '/'       },
   { label: '~/about',   path: '/about'  },
   { label: '~/games',   path: '/games'  },
   { label: '~/resume',  path: '/resume' },
@@ -13,21 +14,10 @@ interface Props {
   currentPath?: string;
 }
 
-const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
-  ({ children, currentPath = '/' }, externalRef) => {
-    const internalRef = useRef<HTMLDivElement>(null);
-    const inputRef    = useRef<HTMLInputElement>(null);
+export default function TerminalShell({ children, currentPath = '/' }: Props) {
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const inputRef  = useRef<HTMLInputElement>(null);
     const { theme, setTheme } = useTheme();
-
-    // Merge external ref (used by Home for scroll-during-intro) with internal
-    const setBodyRef = useCallback(
-      (el: HTMLDivElement | null) => {
-        (internalRef as React.RefObject<HTMLDivElement | null>).current = el;
-        if (typeof externalRef === 'function') externalRef(el);
-        else if (externalRef)                 externalRef.current = el;
-      },
-      [externalRef],
-    );
 
     const [cmdLog,   setCmdLog]   = useState<{ cmd: string; out: React.ReactNode }[]>([]);
     const [value,    setValue]    = useState('');
@@ -38,7 +28,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
     useEffect(() => {
       if (!cmdLog.length) return;
       requestAnimationFrame(() => {
-        internalRef.current?.scrollTo({ top: internalRef.current.scrollHeight, behavior: 'auto' });
+        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'auto' });
       });
     }, [cmdLog]);
 
@@ -187,6 +177,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
     };
 
     return (
+      <ShellScrollContext.Provider value={scrollRef}>
       <div className="h-screen flex flex-col overflow-hidden" style={{ background: 'var(--t-bg)' }}>
 
         {/* ── Title bar ── */}
@@ -229,12 +220,17 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
         </div>
 
         {/* ── Scrollable content ── */}
-        <div ref={setBodyRef} className="flex-1 overflow-y-auto min-h-0">
+        <div ref={scrollRef} className="flex-1 min-h-0 relative">
           {children}
+        </div>
 
-          {/* Command log — appended after page content */}
+        {/* ── Command log + input ── */}
+        <div
+          className="shrink-0"
+          style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
+        >
           {cmdLog.length > 0 && (
-            <div className="px-3 sm:px-6 pb-5 sm:pb-6 md:px-10 space-y-4">
+            <div className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto space-y-3">
               {cmdLog.map((entry, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-2">
@@ -246,14 +242,10 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
               ))}
             </div>
           )}
-        </div>
-
-        {/* ── Fixed command input ── */}
-        <div
-          className="flex items-center gap-2 px-3 sm:px-6 py-3 sm:py-4 shrink-0"
-          style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
-          onClick={() => inputRef.current?.focus()}
-        >
+          <div
+            className="flex items-center gap-2 px-3 sm:px-6 py-3 sm:py-4"
+            onClick={() => inputRef.current?.focus()}
+          >
           <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
           <input
             ref={inputRef}
@@ -267,11 +259,9 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
             autoComplete="off"
             autoCorrect="off"
           />
+          </div>
         </div>
       </div>
+      </ShellScrollContext.Provider>
     );
-  },
-);
-
-TerminalShell.displayName = 'TerminalShell';
-export default TerminalShell;
+}

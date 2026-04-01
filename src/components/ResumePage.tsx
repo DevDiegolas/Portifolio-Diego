@@ -1,4 +1,3 @@
-import TerminalShell from './TerminalShell';
 import resumePdf from '../assets/DIEGORESUME.pdf';
 
 // ── Corner decoration ──────────────────────────────────────────────────────
@@ -93,8 +92,7 @@ function QuestEntry({
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function ResumePage() {
   return (
-    <TerminalShell currentPath="/resume">
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full">
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full">
 
         {/* ── Quest Log frame ── */}
         <div
@@ -271,6 +269,5 @@ export default function ResumePage() {
           </div>
         </div>
       </section>
-    </TerminalShell>
   );
 }

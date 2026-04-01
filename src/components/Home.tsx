@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import TerminalShell from './TerminalShell';
 import iconPotato from '../assets/icon-potato.png';
 import bgPotato from '../assets/bg-potato.png';
 import iconSolo from '../assets/icon-solo.png';
@@ -364,7 +363,7 @@ const INTRO_KEY = 'portfolio_intro_shown';
 export default function Home() {
   const [introSeen]    = useState(() => sessionStorage.getItem(INTRO_KEY) === '1');
   const [showContent,  setShowContent]  = useState(introSeen);
-  const bodyRef                         = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
 
   // Mark intro as seen immediately so back-navigation skips it
   useEffect(() => {
@@ -373,7 +372,8 @@ export default function Home() {
 
   const scrollToBottom = useCallback(() => {
     requestAnimationFrame(() => {
-      bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight, behavior: 'auto' });
+      const scrollable = wrapperRef.current?.parentElement;
+      if (scrollable) scrollable.scrollTop = scrollable.scrollHeight;
     });
   }, []);
 
@@ -384,8 +384,7 @@ export default function Home() {
   useEffect(() => { if (showContent) scrollToBottom(); }, [showContent, scrollToBottom]);
 
   return (
-    <TerminalShell ref={bodyRef} currentPath="/">
-      <div className="px-4 sm:px-6 py-5 sm:py-6 md:px-10 md:py-8">
+      <div ref={wrapperRef} className="px-4 sm:px-6 py-5 sm:py-6 md:px-10 md:py-8">
 
         {/* First visit: animated intro. Return visit: full static output instantly. */}
         {!introSeen
@@ -454,6 +453,5 @@ export default function Home() {
 
         <div className="h-6" />
       </div>
-    </TerminalShell>
   );
 }
