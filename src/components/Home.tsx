@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import TerminalShell from './TerminalShell';
 import iconPotato from '../assets/icon-potato.png';
 import bgPotato from '../assets/bg-potato.png';
@@ -281,11 +281,12 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
   const [lines,      setLines]      = useState<React.ReactNode[]>([]);
   const [currentCmd, setCurrentCmd] = useState('');
   const [typing,     setTyping]     = useState(true);
-  const [blink,      setBlink]      = useState(true);
+  const onDoneRef = useRef(onDone);
+  const onScrollRef = useRef(onScroll);
 
   useEffect(() => {
-    const id = setInterval(() => setBlink(b => !b), 530);
-    return () => clearInterval(id);
+    onDoneRef.current = onDone;
+    onScrollRef.current = onScroll;
   }, [onDone, onScroll]);
 
   useEffect(() => {
@@ -307,13 +308,15 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
               {item.node}
             </div>
           )]);
-          onScroll();
+          onScrollRef.current();
           await delay(50);
         } else if (item.type === 'cmd') {
           setTyping(true);
           for (let c = 0; c <= item.text.length; c++) {
             if (cancelled) return;
-            setCurrentCmd(item.text.slice(0, c));
+            if (c % 2 === 0 || c === item.text.length) {
+              setCurrentCmd(item.text.slice(0, c));
+            }
             await delay(45 + Math.random() * 25);
           }
           if (cancelled) return;
@@ -325,17 +328,17 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
               <span className="pixel-title text-xs"             style={{ color: 'var(--t-primary)' }}>{committed}</span>
             </div>
           )]);
-          onScroll();
+          onScrollRef.current();
           await delay(180);
         }
       }
       setTyping(false);
-      onDone();
+      onDoneRef.current();
     }
 
     run();
     return () => { cancelled = true; };
-  }, [onDone, onScroll]);
+  }, []);
 
   return (
     <div>
@@ -344,8 +347,8 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
         <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
         <span className="pixel-title text-xs"             style={{ color: 'var(--t-primary)' }}>{currentCmd}</span>
         <span
-          className="inline-block w-1.5 h-3.5 align-middle"
-          style={{ background: (typing || blink) ? 'var(--t-primary)' : 'transparent' }}
+          className={`inline-block w-1.5 h-3.5 align-middle intro-caret ${typing ? '' : 'intro-caret-idle'}`}
+          style={{ background: 'var(--t-primary)' }}
         />
       </div>
     </div>
@@ -366,13 +369,17 @@ export default function Home() {
     if (!introSeen) sessionStorage.setItem(INTRO_KEY, '1');
   }, [introSeen]);
 
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight, behavior: 'smooth' });
-    }, 40);
-  };
+  const scrollToBottom = useCallback(() => {
+    requestAnimationFrame(() => {
+      bodyRef.current?.scrollTo({ top: bodyRef.current.scrollHeight, behavior: 'auto' });
+    });
+  }, []);
 
-  useEffect(() => { if (showContent) scrollToBottom(); }, [showContent]);
+  const handleIntroDone = useCallback(() => {
+    setShowContent(true);
+  }, []);
+
+  useEffect(() => { if (showContent) scrollToBottom(); }, [showContent, scrollToBottom]);
 
   return (
     <TerminalShell ref={bodyRef} currentPath="/">
@@ -380,7 +387,7 @@ export default function Home() {
 
         {/* First visit: animated intro. Return visit: full static output instantly. */}
         {!introSeen
-          ? <TerminalIntro onDone={() => setShowContent(true)} onScroll={scrollToBottom} />
+          ? <TerminalIntro onDone={handleIntroDone} onScroll={scrollToBottom} />
           : <StaticIntro />
         }
 

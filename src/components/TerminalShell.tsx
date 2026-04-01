@@ -37,9 +37,9 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
     // Auto-scroll when cmdLog grows
     useEffect(() => {
       if (!cmdLog.length) return;
-      setTimeout(() => {
-        internalRef.current?.scrollTo({ top: internalRef.current.scrollHeight, behavior: 'smooth' });
-      }, 40);
+      requestAnimationFrame(() => {
+        internalRef.current?.scrollTo({ top: internalRef.current.scrollHeight, behavior: 'auto' });
+      });
     }, [cmdLog]);
 
     const gotoPage = (p: string) => {
