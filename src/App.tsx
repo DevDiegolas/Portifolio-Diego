@@ -7,6 +7,8 @@ import GameProfilePage from './components/GameProfilePage';
 import GameLoader from './components/GameLoader';
 import TerminalShell from './components/TerminalShell';
 import { ThemeProvider } from './ThemeContext';
+import { UnderwaterProvider, useUnderwater } from './UnderwaterContext';
+import UnderwaterOverlay from './components/UnderwaterOverlay';
 
 const ROUTE_ORDER: Record<string, number> = {
   '/': 0,
@@ -115,18 +117,38 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <div className="h-screen overflow-hidden font-sans" style={{ color: 'var(--t-text)' }}>
-        {!loaded ? (
-          <GameLoader
-            onComplete={() => {
-              sessionStorage.setItem('portfolio_loaded', '1');
-              setLoaded(true);
-            }}
-          />
-        ) : (
+      <UnderwaterProvider>
+        <AppShell
+          loaded={loaded}
+          onLoaded={() => { sessionStorage.setItem('portfolio_loaded', '1'); setLoaded(true); }}
+          path={path}
+          prev={prev}
+          direction={direction}
+        />
+      </UnderwaterProvider>
+    </ThemeProvider>
+  );
+}
+
+function AppShell({
+  loaded, onLoaded, path, prev, direction,
+}: {
+  loaded: boolean;
+  onLoaded: () => void;
+  path: string;
+  prev: { path: string; dir: 'forward' | 'back' } | null;
+  direction: 'forward' | 'back';
+}) {
+  const { active } = useUnderwater();
+
+  return (
+    <div className={`h-screen overflow-hidden font-sans${active ? ' underwater-active' : ''}`} style={{ color: 'var(--t-text)' }}>
+      {!loaded ? (
+        <GameLoader onComplete={onLoaded} />
+      ) : (
+        <>
           <TerminalShell currentPath={path}>
             <div className="relative h-full overflow-hidden">
-              {/* Outgoing page — animates out, removed after transition */}
               {prev && (
                 <div
                   key={`out-${prev.path}`}
@@ -136,7 +158,6 @@ export default function App() {
                   {pageFor(prev.path)}
                 </div>
               )}
-              {/* Incoming page — animates in */}
               <div
                 key={`in-${path}`}
                 className={`absolute inset-0 overflow-y-auto ${prev ? `page-enter ${direction === 'forward' ? 'page-enter-forward' : 'page-enter-back'}` : ''}`}
@@ -145,8 +166,9 @@ export default function App() {
               </div>
             </div>
           </TerminalShell>
-        )}
-      </div>
-    </ThemeProvider>
+          {active && <UnderwaterOverlay />}
+        </>
+      )}
+    </div>
   );
 }

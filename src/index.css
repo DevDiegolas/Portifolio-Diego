@@ -137,6 +137,89 @@ label {
   animation-duration: 1.2s;
 }
 
+/* ── Underwater effect ── */
+
+.underwater-active {
+  filter: url(#uw-distort);
+  transition: filter 0.6s ease;
+}
+
+.uw-tint {
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(0, 100, 140, 0.06) 0%,
+    rgba(0, 50, 90, 0.14) 100%
+  );
+  mix-blend-mode: multiply;
+}
+
+.uw-caustics {
+  background:
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(80, 200, 255, 0.02) 0deg 10deg,
+      transparent 10deg 20deg
+    );
+  animation: uw-caustics-shift 8s linear infinite;
+}
+
+@keyframes uw-caustics-shift {
+  to { transform: rotate(360deg) scale(2); }
+}
+
+.uw-bubble {
+  position: absolute;
+  bottom: -24px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(180, 230, 255, 0.5) 0%,
+    rgba(100, 180, 220, 0.2) 50%,
+    transparent 70%
+  );
+  border: 1px solid rgba(160, 220, 255, 0.25);
+  animation: uw-float linear infinite;
+}
+
+@keyframes uw-float {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: var(--tw-opacity, 0.2);
+  }
+  50% {
+    transform: translateY(-50vh) translateX(var(--uw-wobble, 10px));
+  }
+  100% {
+    transform: translateY(-110vh) translateX(calc(var(--uw-wobble, 10px) * -0.5));
+    opacity: 0;
+  }
+}
+
+.uw-trail {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(160, 220, 255, 0.55) 0%,
+    rgba(100, 180, 230, 0.2) 60%,
+    transparent 80%
+  );
+  border: 1px solid rgba(160, 220, 255, 0.2);
+  pointer-events: none;
+  animation: uw-trail-rise 1.1s ease-out forwards;
+}
+
+@keyframes uw-trail-rise {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-60px) scale(0.3);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-enter,
   .page-exit {

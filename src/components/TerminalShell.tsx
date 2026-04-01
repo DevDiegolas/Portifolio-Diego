@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { THEMES, useTheme } from '../ThemeContext';
+import { useUnderwater } from '../UnderwaterContext';
 import { ShellScrollContext } from '../ShellScrollContext';
 
 const NAV = [
@@ -17,19 +18,21 @@ interface Props {
 
 export default function TerminalShell({ children, currentPath = '/' }: Props) {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const cmdLogRef = useRef<HTMLDivElement>(null);
     const inputRef  = useRef<HTMLInputElement>(null);
     const { theme, setTheme } = useTheme();
+    const { active: uwActive, toggle: uwToggle } = useUnderwater();
 
     const [cmdLog,   setCmdLog]   = useState<{ cmd: string; out: React.ReactNode }[]>([]);
     const [value,    setValue]    = useState('');
     const [hist,     setHist]     = useState<string[]>([]);
     const [histIdx,  setHistIdx]  = useState(-1);
 
-    // Auto-scroll when cmdLog grows
+    // Auto-scroll command log when it grows
     useEffect(() => {
       if (!cmdLog.length) return;
       requestAnimationFrame(() => {
-        scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'auto' });
+        cmdLogRef.current?.scrollTo({ top: cmdLogRef.current.scrollHeight, behavior: 'smooth' });
       });
     }, [cmdLog]);
 
@@ -111,6 +114,21 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
         return;
       }
 
+      // ── Underwater toggle ──
+      if (cmd === 'underwater') {
+        uwToggle();
+        const next = !uwActive;
+        setCmdLog(h => [...h, {
+          cmd: raw,
+          out: (
+            <span className="pixel-body text-xl" style={{ color: 'var(--t-secondary)' }}>
+              {next ? '🫧 Underwater mode activated. Dive in.' : '☀ Underwater mode deactivated. Back to the surface.'}
+            </span>
+          ),
+        }]);
+        return;
+      }
+
       const responses: Record<string, React.ReactNode> = {
         help: (
           <div className="pixel-body text-xl space-y-0.5" style={{ color: 'var(--t-text-muted)' }}>
@@ -123,6 +141,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
             <p><span style={{ color: 'var(--t-primary)' }}>whoami</span>  — who is Diego</p>
             <p><span style={{ color: 'var(--t-primary)' }}>theme</span>   — change color theme</p>
             <p><span style={{ color: 'var(--t-primary)' }}>color</span>   — alias for theme command</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>underwater</span> — toggle underwater mode</p>
             <p><span style={{ color: 'var(--t-primary)' }}>clear</span>   — clear history</p>
             <p><span style={{ color: 'var(--t-primary)' }}>pwd</span>     — current path</p>
           </div>
@@ -233,7 +252,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
           style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
         >
           {cmdLog.length > 0 && (
-            <div className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto space-y-3">
+            <div ref={cmdLogRef} className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto space-y-3">
               {cmdLog.map((entry, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-2">
