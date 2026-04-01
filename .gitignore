@@ -55,3 +55,4 @@ _opensquad/_logs/
 credentials.json
 *.pem
 *.key
+.vercel

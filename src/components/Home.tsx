@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import TerminalShell from './TerminalShell';
+import iconPotato from '../assets/icon-potato.png';
+import bgPotato from '../assets/bg-potato.png';
+import iconSolo from '../assets/icon-solo.png';
+import bgSolo from '../assets/bg-solo.png';
 
 // ── Tech data ──────────────────────────────────────────────────────────────
 const CDN = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
@@ -380,8 +384,8 @@ export default function Home() {
                 title="POTATO CLICKER"
                 description="An idle clicker game where you grow your potato empire."
                 expandedText="Click to harvest, buy upgrades, and watch your potatoes multiply across increasingly complex prestige loops."
-                icon="/src/assets/icon-potato.png"
-                bgImage="/src/assets/bg-potato.png"
+                icon={iconPotato}
+                bgImage={bgPotato}
                 tags={['idle', 'godot', 'in-dev']}
                 accentColor="#c2ce2b"
               />
@@ -391,8 +395,8 @@ export default function Home() {
                 title="SOLO BLOCKING"
                 description="A fast combat prototype with tight block mechanics."
                 expandedText="Responsive controls, impact feedback, and movement polish are the core focus of this action combat prototype."
-                icon="/src/assets/icon-solo.png"
-                bgImage="/src/assets/bg-solo.png"
+                icon={iconSolo}
+                bgImage={bgSolo}
                 tags={['combat', 'godot', 'in-dev']}
                 accentColor="#a855f7"
               />
