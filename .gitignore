@@ -56,3 +56,6 @@ credentials.json
 *.pem
 *.key
 .vercel
+
+# Claude local settings
+.claude/settings.local.json
