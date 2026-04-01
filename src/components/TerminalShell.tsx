@@ -17,16 +17,36 @@ interface Props {
 }
 
 export default function TerminalShell({ children, currentPath = '/' }: Props) {
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const cmdLogRef = useRef<HTMLDivElement>(null);
-    const inputRef  = useRef<HTMLInputElement>(null);
+    const scrollRef  = useRef<HTMLDivElement>(null);
+    const cmdLogRef  = useRef<HTMLDivElement>(null);
+    const inputRef   = useRef<HTMLInputElement>(null);
+    const termBarRef = useRef<HTMLDivElement>(null);
     const { theme, setTheme } = useTheme();
     const { active: uwActive, toggle: uwToggle } = useUnderwater();
 
-    const [cmdLog,   setCmdLog]   = useState<{ cmd: string; out: React.ReactNode }[]>([]);
-    const [value,    setValue]    = useState('');
-    const [hist,     setHist]     = useState<string[]>([]);
-    const [histIdx,  setHistIdx]  = useState(-1);
+    const [cmdLog,    setCmdLog]    = useState<{ cmd: string; out: React.ReactNode }[]>([]);
+    const [value,     setValue]     = useState('');
+    const [hist,      setHist]     = useState<string[]>([]);
+    const [histIdx,   setHistIdx]  = useState(-1);
+    const [collapsed, setCollapsed] = useState(false);
+
+    // Collapse terminal when clicking outside its bar
+    useEffect(() => {
+      const handler = (e: MouseEvent) => {
+        if (termBarRef.current && !termBarRef.current.contains(e.target as Node)) {
+          if (cmdLog.length > 0 || value.length > 0) {
+            setCollapsed(true);
+          }
+        }
+      };
+      document.addEventListener('mousedown', handler);
+      return () => document.removeEventListener('mousedown', handler);
+    }, [cmdLog.length, value.length]);
+
+    const expandTerminal = () => {
+      setCollapsed(false);
+      requestAnimationFrame(() => inputRef.current?.focus());
+    };
 
     // Auto-scroll command log when it grows
     useEffect(() => {
@@ -248,39 +268,74 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
 
         {/* ── Command log + input ── */}
         <div
-          className="shrink-0"
-          style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
+          ref={termBarRef}
+          className="shrink-0 relative"
+          style={{
+            borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)',
+            background: 'var(--t-bg-bar)',
+            minHeight: '2.6rem',
+          }}
         >
-          {cmdLog.length > 0 && (
-            <div ref={cmdLogRef} className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto space-y-3">
-              {cmdLog.map((entry, i) => (
-                <div key={i}>
-                  <div className="flex items-center gap-2">
-                    <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
-                    <span className="pixel-title text-xs" style={{ color: 'var(--t-primary)' }}>{entry.cmd}</span>
-                  </div>
-                  <div className="mt-1 ml-4">{entry.out}</div>
-                </div>
-              ))}
-            </div>
-          )}
+          {/* Collapsed hint bar — always in DOM, fades in/out */}
           <div
-            className="flex items-center gap-2 px-3 sm:px-6 py-3 sm:py-4"
-            onClick={() => inputRef.current?.focus()}
+            className="absolute inset-0 flex items-center gap-2 px-3 sm:px-6 cursor-pointer"
+            style={{
+              opacity: collapsed ? 1 : 0,
+              pointerEvents: collapsed ? 'auto' : 'none',
+              transition: 'opacity 0.3s ease',
+              zIndex: collapsed ? 1 : 0,
+            }}
+            onClick={expandTerminal}
           >
-          <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
-          <input
-            ref={inputRef}
-            value={value}
-            onChange={e => { setValue(e.target.value); setHistIdx(-1); }}
-            onKeyDown={onKeyDown}
-            className="flex-1 bg-transparent outline-none pixel-title text-xs"
-            style={{ color: 'var(--t-primary)', caretColor: 'var(--t-primary)' }}
-            placeholder="type a command… (try 'help')"
-            spellCheck={false}
-            autoComplete="off"
-            autoCorrect="off"
-          />
+            <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+            <span className="pixel-title text-xs" style={{ color: 'var(--t-text-dim)' }}>
+              {value || 'click to expand terminal…'}
+            </span>
+            <span className="ml-auto pixel-body text-sm" style={{ color: 'var(--t-text-dimmer)', transition: 'transform 0.3s ease', transform: collapsed ? 'rotate(0)' : 'rotate(180deg)' }}>▲</span>
+          </div>
+
+          {/* Expanded: log + input — slides via grid trick */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateRows: collapsed ? '0fr' : '1fr',
+              opacity: collapsed ? 0 : 1,
+              transition: 'grid-template-rows 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease',
+            }}
+          >
+            <div style={{ overflow: 'hidden' }}>
+              {cmdLog.length > 0 && (
+                <div ref={cmdLogRef} className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto space-y-3">
+                  {cmdLog.map((entry, i) => (
+                    <div key={i}>
+                      <div className="flex items-center gap-2">
+                        <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+                        <span className="pixel-title text-xs" style={{ color: 'var(--t-primary)' }}>{entry.cmd}</span>
+                      </div>
+                      <div className="mt-1 ml-4">{entry.out}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div
+                className="flex items-center gap-2 px-3 sm:px-6 py-3 sm:py-4"
+                onClick={() => inputRef.current?.focus()}
+              >
+                <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+                <input
+                  ref={inputRef}
+                  value={value}
+                  onChange={e => { setValue(e.target.value); setHistIdx(-1); }}
+                  onKeyDown={onKeyDown}
+                  className="flex-1 bg-transparent outline-none pixel-title text-xs"
+                  style={{ color: 'var(--t-primary)', caretColor: 'var(--t-primary)' }}
+                  placeholder="type a command… (try 'help')"
+                  spellCheck={false}
+                  autoComplete="off"
+                  autoCorrect="off"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
