@@ -207,7 +207,7 @@ export default function GamesPage() {
                       key={game.id}
                       type="button"
                       onClick={() => selectGame(index)}
-                      className="text-left rounded-xl border transition-all duration-300 px-3 py-3 flex items-center gap-3"
+                      className="no-hover-scale text-left rounded-xl border transition-all duration-300 px-3 py-3 flex items-center gap-3"
                       style={{
                         borderColor: isActive ? `${game.accentFrom}88` : 'color-mix(in srgb, var(--t-text) 10%, transparent)',
                         background: isActive ? `${game.accentFrom}18` : 'color-mix(in srgb, var(--t-bg-darker) 78%, transparent)',

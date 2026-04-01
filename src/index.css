@@ -6,7 +6,8 @@
   --pixel-green: #9be564;
   --pixel-yellow: #ffd166;
   --pixel-pink: #f497c2;
-  --pixel-cursor: url("/cursor-stardew-brown.svg") 2 2;
+  --pixel-cursor: url("/normal-big.png") 2 2;
+  --pixel-cursor-click: url("/podendoclicar-big.png") 2 2;
 
   /* Theme variables — overridden at runtime by ThemeContext */
   --t-primary: #8ecae6;
@@ -35,8 +36,7 @@
 }
 
 html,
-body,
-* {
+body {
   cursor: var(--pixel-cursor), auto;
 }
 
@@ -47,8 +47,22 @@ input,
 select,
 textarea,
 summary,
-label {
-  cursor: var(--pixel-cursor), pointer;
+label,
+.cursor-pointer,
+[onclick],
+[tabindex]:not([tabindex="-1"]) {
+  cursor: var(--pixel-cursor-click), pointer;
+}
+
+/* Clickable text: subtle scale on hover (cards excluded via .no-hover-scale) */
+a:not(.block):not(.no-hover-scale),
+button:not(.no-hover-scale):not(:disabled) {
+  transition: transform 0.15s ease;
+}
+
+a:not(.block):not(.no-hover-scale):hover,
+button:not(.no-hover-scale):not(:disabled):hover {
+  transform: scale(1.04);
 }
 
 .pixel-title {
