@@ -6,6 +6,7 @@ const NAV = [
   { label: '~/home',    path: '/'       },
   { label: '~/about',   path: '/about'  },
   { label: '~/games',   path: '/games'  },
+  { label: '~/profile', path: '/game-profile' },
   { label: '~/resume',  path: '/resume' },
 ];
 
@@ -43,7 +44,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
       if (cmd === 'clear') { setCmdLog([]); return; }
 
       const navMap: Record<string, string> = {
-        about: '/about', games: '/games', resume: '/resume', home: '/', '~': '/',
+        about: '/about', games: '/games', profile: '/game-profile', 'game-profile': '/game-profile', resume: '/resume', home: '/', '~': '/',
       };
 
       if (Object.prototype.hasOwnProperty.call(navMap, cmd)) {
@@ -115,6 +116,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
           <div className="pixel-body text-xl space-y-0.5" style={{ color: 'var(--t-text-muted)' }}>
             <p><span style={{ color: 'var(--t-primary)' }}>about</span>   — about page</p>
             <p><span style={{ color: 'var(--t-primary)' }}>games</span>   — games showcase</p>
+            <p><span style={{ color: 'var(--t-primary)' }}>profile</span> — game profile page</p>
             <p><span style={{ color: 'var(--t-primary)' }}>resume</span>  — résumé</p>
             <p><span style={{ color: 'var(--t-primary)' }}>home</span>    — home terminal</p>
             <p><span style={{ color: 'var(--t-primary)' }}>ls</span>      — list pages</p>
@@ -135,6 +137,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
             <a href="/"       style={{ color: 'var(--t-primary)' }} className="hover:underline">home/</a>
             <a href="/about"  style={{ color: 'var(--t-primary)' }} className="hover:underline">about/</a>
             <a href="/games"  style={{ color: 'var(--t-primary)' }} className="hover:underline">games/</a>
+            <a href="/game-profile" style={{ color: 'var(--t-primary)' }} className="hover:underline">profile/</a>
             <a href="/resume" style={{ color: 'var(--t-primary)' }} className="hover:underline">resume/</a>
           </div>
         ),

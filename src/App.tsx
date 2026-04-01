@@ -3,6 +3,7 @@ import Home from './components/Home';
 import ResumePage from './components/ResumePage';
 import GamesPage from './components/GamesPage';
 import AboutPage from './components/AboutPage';
+import GameProfilePage from './components/GameProfilePage';
 import GameLoader from './components/GameLoader';
 import TerminalShell from './components/TerminalShell';
 import { ThemeProvider } from './ThemeContext';
@@ -11,7 +12,8 @@ const ROUTE_ORDER: Record<string, number> = {
   '/': 0,
   '/about': 1,
   '/games': 2,
-  '/resume': 3,
+  '/game-profile': 3,
+  '/resume': 4,
 };
 
 const TRANSITION_MS = 380;
@@ -24,6 +26,7 @@ function getPathname() {
 function pageFor(p: string) {
   if (p === '/resume') return <ResumePage />;
   if (p === '/games') return <GamesPage />;
+  if (p === '/game-profile') return <GameProfilePage />;
   if (p === '/about') return <AboutPage />;
   return <Home />;
 }
