@@ -93,7 +93,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
             <a href="/resume" style={{ color: '#8ecae6' }} className="hover:underline">resume/</a>
           </div>
         ),
-        pwd: <span className="pixel-body text-xl" style={{ color: '#8ecae6' }}>{currentPath}</span>,
+        pwd: <span className="pixel-body text-xl" style={{ color: '#8ecae6' }}>{currentPath === '/' ? '/home' : currentPath}</span>,
       };
 
       const out = responses[cmd] ?? (

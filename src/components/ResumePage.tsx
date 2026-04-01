@@ -1,35 +1,163 @@
 import TerminalShell from './TerminalShell';
 import resumePdf from '../assets/DIEGORESUME.pdf';
 
+// ── Corner decoration ──────────────────────────────────────────────────────
+function Corner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
+  const classes = {
+    tl: 'top-0 left-0 border-t-2 border-l-2',
+    tr: 'top-0 right-0 border-t-2 border-r-2',
+    bl: 'bottom-0 left-0 border-b-2 border-l-2',
+    br: 'bottom-0 right-0 border-b-2 border-r-2',
+  }[pos];
+  return (
+    <div
+      className={`absolute w-5 h-5 ${classes}`}
+      style={{ borderColor: '#e8c97a' }}
+    />
+  );
+}
+
+// ── Section header ─────────────────────────────────────────────────────────
+function SheetHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <span className="pixel-title text-xs" style={{ color: '#e8c97a' }}>◈</span>
+      <span className="pixel-title text-xs tracking-widest" style={{ color: '#e8c97a' }}>{children}</span>
+      <span className="pixel-title text-xs" style={{ color: '#e8c97a' }}>◈</span>
+      <div className="flex-1 h-px" style={{ background: '#3d2e12' }} />
+    </div>
+  );
+}
+
+// ── Info row ───────────────────────────────────────────────────────────────
+function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: '#2a1f0a' }}>
+      <span className="pixel-title text-xs w-32 shrink-0 text-right pt-1" style={{ color: '#9e7d40' }}>{label}</span>
+      <span className="pixel-body text-xl text-slate-300 leading-tight">{value}</span>
+    </div>
+  );
+}
+
+// ── Skill row ──────────────────────────────────────────────────────────────
+function SkillRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: '#2a1f0a' }}>
+      <span className="pixel-title text-xs w-32 shrink-0 text-right" style={{ color: '#9e7d40' }}>{label}</span>
+      <span className="pixel-body text-xl leading-relaxed" style={{ color: '#8ecae6' }}>{value}</span>
+    </div>
+  );
+}
+
+// ── Quest entry ────────────────────────────────────────────────────────────
+function QuestEntry({
+  title,
+  company,
+  dates,
+  achievements,
+}: {
+  title: string;
+  company: string;
+  dates: string;
+  achievements: string[];
+}) {
+  return (
+    <div
+      className="rounded-lg p-5 space-y-3"
+      style={{ background: '#110e07', border: '1px solid #3d2e12' }}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <div className="space-y-1">
+          <p className="pixel-title text-xs" style={{ color: '#e8c97a' }}>{title}</p>
+          <p className="pixel-body text-lg" style={{ color: '#c9a55c' }}>{company}</p>
+        </div>
+        <span
+          className="pixel-body text-base px-2 py-0.5 rounded"
+          style={{ color: '#9e7d40', background: '#1a1208', border: '1px solid #3d2e12' }}
+        >
+          {dates}
+        </span>
+      </div>
+      <ul className="space-y-2 pl-1">
+        {achievements.map((item, i) => (
+          <li key={i} className="flex items-start gap-2">
+            <span className="pixel-title text-xs mt-0.5 shrink-0" style={{ color: '#9be564' }}>+</span>
+            <span className="pixel-body text-lg text-slate-300 leading-relaxed">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────
 export default function ResumePage() {
   return (
     <TerminalShell currentPath="/resume">
-      <section id="resume" className="max-w-6xl mx-auto px-6 py-8 w-full">
+      <section className="max-w-6xl mx-auto px-6 py-8 w-full">
 
-        <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 md:p-8 space-y-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-              <h3 className="pixel-title text-sm md:text-base text-white">Diego Goncalves</h3>
-              <p className="pixel-body text-lg text-slate-200">Fullstack Software Engineer &amp; Game Developer</p>
-              <p className="pixel-body text-base text-slate-300 mt-1">
-                Guaruja, SP, Brazil | +55 (13) 98138-4361 | diegogpssth@gmail.com
+        {/* ── Quest Log frame ── */}
+        <div
+          className="relative rounded-2xl p-6 md:p-8 space-y-8"
+          style={{
+            background: '#0d0b06',
+            border: '2px solid #c9a55c',
+            boxShadow: '0 0 0 4px #3d2208, 0 0 0 6px #c9a55c44',
+          }}
+        >
+          <Corner pos="tl" />
+          <Corner pos="tr" />
+          <Corner pos="bl" />
+          <Corner pos="br" />
+
+          {/* ── Sheet title + download ── */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 -mt-2">
+            <div className="text-center md:text-left">
+              <p
+                className="pixel-title text-sm md:text-base tracking-widest"
+                style={{ color: '#e8c97a', textShadow: '0 0 16px #c9a55c88' }}
+              >
+                ◈ QUEST LOG ◈
+              </p>
+              <p className="pixel-body text-xl text-slate-300 mt-1">
+                Fullstack Software Engineer &amp; Game Developer
+              </p>
+              <p className="pixel-body text-base mt-0.5" style={{ color: '#9e7d40' }}>
+                Guaruja, SP, Brazil &nbsp;|&nbsp; +55 (13) 98138-4361 &nbsp;|&nbsp; diegogpssth@gmail.com
               </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center md:justify-end shrink-0">
               <a
                 href={resumePdf}
                 download
-                className="inline-flex items-center justify-center px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition"
+                className="inline-flex items-center justify-center px-5 py-2 rounded-md pixel-title text-xs tracking-widest transition-all"
+                style={{
+                  color: '#e8c97a',
+                  background: '#110e07',
+                  border: '2px solid #c9a55c',
+                  boxShadow: '0 0 0 2px #3d2208',
+                }}
+                onMouseEnter={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = '#1a1208';
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 0 2px #3d2208, 0 0 8px #c9a55c66';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = '#110e07';
+                  (e.currentTarget as HTMLAnchorElement).style.boxShadow = '0 0 0 2px #3d2208';
+                }}
               >
-                Download PDF
+                Download Scroll
               </a>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <article className="bg-gray-950 border border-gray-800 rounded-xl p-5 md:col-span-2">
-              <h3 className="pixel-title text-sm text-white mb-3">Professional Summary</h3>
-              <p className="pixel-body text-lg text-slate-200 leading-relaxed">
+          {/* ── Grid layout ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            {/* ── Adventurer's Tale (full width) ── */}
+            <div className="md:col-span-2">
+              <SheetHeader>ADVENTURER'S TALE</SheetHeader>
+              <p className="pixel-body text-xl text-slate-300 leading-relaxed pl-1">
                 Software Engineer with a unique foundation in game development. Currently building
                 high-performance, scalable fullstack applications, utilizing Go, Node.js, and TypeScript for
                 robust backends, alongside React and React Native for intuitive frontends. Looking to combine
@@ -37,89 +165,109 @@ export default function ResumePage() {
                 scalable systems, LiveOps, and engaging user experiences for innovative studios. Advanced
                 English speaker and B.S. in Computer Science student.
               </p>
-            </article>
+            </div>
 
-            <article className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-              <h3 className="pixel-title text-sm text-white mb-3">Technical Skills</h3>
-              <ul className="pixel-body text-lg text-slate-200 leading-relaxed list-disc list-inside space-y-1">
-                <li>Languages: TypeScript, Go (Golang), Python, C#, GDScript, GML</li>
-                <li>Frontend: React Native, React, Tailwind CSS</li>
-                <li>Backend &amp; Infrastructure: Node.js, REST APIs, AWS (EC2, S3, Lambda), Docker, PostgreSQL, MySQL</li>
-                <li>Game Engines &amp; Design: Godot, Unity, Unreal Engine, Roblox Studio, Game Maker</li>
-              </ul>
-            </article>
-
-            <article className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-              <h3 className="pixel-title text-sm text-white mb-3">Links</h3>
-              <div className="pixel-body text-lg text-slate-200 leading-relaxed space-y-2">
-                <p>
-                  LinkedIn:{' '}
-                  <a
-                    href="https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sky-300 hover:text-sky-200 underline"
-                  >
-                    diego-goncalves-piovezan
-                  </a>
-                </p>
-                <p>
-                  GitHub:{' '}
-                  <a
-                    href="https://github.com/DevDiegolas"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sky-300 hover:text-sky-200 underline"
-                  >
-                    DevDiegolas
-                  </a>
-                </p>
+            {/* ── Skill Tree ── */}
+            <div>
+              <SheetHeader>SKILL TREE</SheetHeader>
+              <div className="space-y-0">
+                <SkillRow label="LANGUAGES"  value="TypeScript, Go (Golang), Python, C#, GDScript, GML" />
+                <SkillRow label="FRONTEND"   value="React Native, React, Tailwind CSS" />
+                <SkillRow label="BACKEND"    value="Node.js, REST APIs, AWS (EC2, S3, Lambda), Docker, PostgreSQL, MySQL" />
+                <SkillRow label="GAME ENG."  value="Godot, Unity, Unreal Engine, Roblox Studio, Game Maker" />
               </div>
-            </article>
+            </div>
 
-            <article className="bg-gray-950 border border-gray-800 rounded-xl p-5 md:col-span-2">
-              <h3 className="pixel-title text-sm text-white mb-3">Professional Experience</h3>
+            {/* ── Guild Links ── */}
+            <div>
+              <SheetHeader>GUILD LINKS</SheetHeader>
+              <div className="space-y-0">
+                <InfoRow
+                  label="LINKEDIN"
+                  value={
+                    <a
+                      href="https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                      style={{ color: '#8ecae6' }}
+                    >
+                      diego-goncalves-piovezan
+                    </a>
+                  }
+                />
+                <InfoRow
+                  label="GITHUB"
+                  value={
+                    <a
+                      href="https://github.com/DevDiegolas"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline"
+                      style={{ color: '#8ecae6' }}
+                    >
+                      DevDiegolas
+                    </a>
+                  }
+                />
+              </div>
+            </div>
+
+            {/* ── Completed Quests (full width) ── */}
+            <div className="md:col-span-2">
+              <SheetHeader>COMPLETED QUESTS</SheetHeader>
               <div className="space-y-4">
-                <div>
-                  <p className="pixel-title text-xs text-white">Junior FullStack Engineer | Orion Maritima | 2025 - Present</p>
-                  <ul className="pixel-body text-lg text-slate-200 leading-relaxed list-disc list-inside mt-2 space-y-1">
-                    <li>Developed cross-platform mobile interfaces using React Native, TypeScript, and Tailwind CSS</li>
-                    <li>Built high-performance back-end services with Go and Node.js, reducing manual operational tasks</li>
-                    <li>Managed SQL databases with focus on data integrity and optimized reporting queries</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="pixel-title text-xs text-white">Game Development Instructor | SuperGeeks | 2020 - 2022 | 2023 - 2024</p>
-                  <ul className="pixel-body text-lg text-slate-200 leading-relaxed list-disc list-inside mt-2 space-y-1">
-                    <li>Led game development and programming logic classes across Unity, Unreal, Roblox, and Godot</li>
-                    <li>Simplified complex concepts for diverse student groups, strengthening communication and leadership</li>
-                    <li>Managed student progress and delivered technical support for hybrid and online classes</li>
-                  </ul>
-                </div>
-                <div>
-                  <p className="pixel-title text-xs text-white">Web &amp; Mobile Support Analyst | Webline | 2022 - 2023</p>
-                  <ul className="pixel-body text-lg text-slate-200 leading-relaxed list-disc list-inside mt-2 space-y-1">
-                    <li>Performed deep technical troubleshooting to identify and resolve critical software issues</li>
-                    <li>Executed advanced SQL queries and database operations to support stability and client requests</li>
-                  </ul>
-                </div>
+                <QuestEntry
+                  title="Junior FullStack Engineer"
+                  company="Orion Maritima"
+                  dates="2025 - Present"
+                  achievements={[
+                    'Developed cross-platform mobile interfaces using React Native, TypeScript, and Tailwind CSS',
+                    'Built high-performance back-end services with Go and Node.js, reducing manual operational tasks',
+                    'Managed SQL databases with focus on data integrity and optimized reporting queries',
+                  ]}
+                />
+                <QuestEntry
+                  title="Game Development Instructor"
+                  company="SuperGeeks"
+                  dates="2020 - 2022 | 2023 - 2024"
+                  achievements={[
+                    'Led game development and programming logic classes across Unity, Unreal, Roblox, and Godot',
+                    'Simplified complex concepts for diverse student groups, strengthening communication and leadership',
+                    'Managed student progress and delivered technical support for hybrid and online classes',
+                  ]}
+                />
+                <QuestEntry
+                  title="Web &amp; Mobile Support Analyst"
+                  company="Webline"
+                  dates="2022 - 2023"
+                  achievements={[
+                    'Performed deep technical troubleshooting to identify and resolve critical software issues',
+                    'Executed advanced SQL queries and database operations to support stability and client requests',
+                  ]}
+                />
               </div>
-            </article>
+            </div>
 
-            <article className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-              <h3 className="pixel-title text-sm text-white mb-3">Education</h3>
-              <p className="pixel-body text-lg text-slate-200 leading-relaxed">
-                B.S. in Computer Science | UNIP - Universidade Paulista | 2022 - 2026 (Expected)
-              </p>
-            </article>
+            {/* ── Training Grounds ── */}
+            <div>
+              <SheetHeader>TRAINING GROUNDS</SheetHeader>
+              <div className="space-y-0">
+                <InfoRow label="DEGREE"  value="B.S. in Computer Science" />
+                <InfoRow label="SCHOOL"  value="UNIP - Universidade Paulista" />
+                <InfoRow label="PERIOD"  value="2022 - 2026 (Expected)" />
+              </div>
+            </div>
 
-            <article className="bg-gray-950 border border-gray-800 rounded-xl p-5">
-              <h3 className="pixel-title text-sm text-white mb-3">Languages</h3>
-              <ul className="pixel-body text-lg text-slate-200 leading-relaxed list-disc list-inside space-y-1">
-                <li>Portuguese: Native</li>
-                <li>English: Advanced (Professional working proficiency)</li>
-              </ul>
-            </article>
+            {/* ── Known Languages ── */}
+            <div>
+              <SheetHeader>KNOWN LANGUAGES</SheetHeader>
+              <div className="space-y-0">
+                <InfoRow label="PORTUGUESE" value="Native" />
+                <InfoRow label="ENGLISH"    value="Advanced (Professional working proficiency)" />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
