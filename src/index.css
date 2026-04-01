@@ -98,6 +98,11 @@ label {
   }
 }
 
+@keyframes stat-bar-grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-transition {
     animation-duration: 1ms;

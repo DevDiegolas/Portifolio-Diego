@@ -1,19 +1,13 @@
-import { useEffect, useState } from 'react';
-import Footer from './Footer';
+import TerminalShell from './TerminalShell';
 
 // ── Stat bar ───────────────────────────────────────────────────────────────
+// Width is set directly on the element — CSS animation only controls the reveal.
+// This guarantees GAME DEV (93%) is always wider than TEACHING (90%) etc.
 function StatBar({
   label, value, color, spec, delay,
 }: {
   label: string; value: number; color: string; spec: string; delay: number;
 }) {
-  const [width, setWidth] = useState(0);
-
-  useEffect(() => {
-    const t = setTimeout(() => setWidth(value), delay);
-    return () => clearTimeout(t);
-  }, [value, delay]);
-
   return (
     <div className="flex items-center gap-3">
       {/* Label */}
@@ -30,8 +24,14 @@ function StatBar({
         style={{ background: '#1a1208', border: '1px solid #3d2e12' }}
       >
         <div
-          className="absolute inset-y-0 left-0 rounded-sm transition-all duration-1000 ease-out"
-          style={{ width: `${width}%`, background: color, boxShadow: `0 0 8px ${color}88` }}
+          className="absolute inset-y-0 left-0 rounded-sm"
+          style={{
+            width: `${value}%`,
+            background: color,
+            boxShadow: `0 0 8px ${color}88`,
+            transformOrigin: 'left',
+            animation: `stat-bar-grow 1s ease-out ${delay}ms both`,
+          }}
         />
         {/* Pixel segments */}
         <div
@@ -46,7 +46,7 @@ function StatBar({
       <span className="pixel-title text-xs w-6 shrink-0" style={{ color }}>{value}</span>
 
       {/* Spec */}
-      <span className="pixel-body text-lg text-slate-600 hidden md:block truncate">{spec}</span>
+      <span className="pixel-body text-lg text-slate-600 hidden md:block w-48 truncate">{spec}</span>
     </div>
   );
 }
@@ -62,9 +62,9 @@ const STATS = [
 // ── Info row ───────────────────────────────────────────────────────────────
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: '#2a1f0a' }}>
-      <span className="pixel-title text-xs w-16 shrink-0" style={{ color: '#9e7d40' }}>{label}</span>
-      <span className="pixel-body text-xl text-slate-300">{value}</span>
+    <div className="flex items-center gap-3 py-1.5 border-b" style={{ borderColor: '#2a1f0a' }}>
+      <span className="pixel-title text-xs w-20 shrink-0 text-right" style={{ color: '#9e7d40' }}>{label}</span>
+      <span className="pixel-body text-xl text-slate-300 leading-tight">{value}</span>
     </div>
   );
 }
@@ -100,8 +100,8 @@ function SheetHeader({ children }: { children: React.ReactNode }) {
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function AboutPage() {
   return (
-    <div className="flex flex-col w-full mt-10 space-y-16">
-      <section className="max-w-6xl mx-auto px-6 w-full">
+    <TerminalShell currentPath="/about">
+      <section className="max-w-6xl mx-auto px-6 py-8 w-full">
 
         {/* ── Character Sheet frame ── */}
         <div
@@ -189,8 +189,6 @@ export default function AboutPage() {
 
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </TerminalShell>
   );
 }

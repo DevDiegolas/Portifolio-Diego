@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import Footer from './Footer';
+import TerminalShell from './TerminalShell';
 import bgPotato from '../assets/bg-potato.png';
 import bgSolo from '../assets/bg-solo.png';
 import iconPotato from '../assets/icon-potato.png';
@@ -65,6 +65,8 @@ export default function GamesPage() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Don't hijack arrows when the user is typing in the shell input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
       if (e.key === 'ArrowDown') nextGame();
       if (e.key === 'ArrowUp') prevGame();
     };
@@ -73,15 +75,12 @@ export default function GamesPage() {
   }, [selected]);
 
   return (
-    <div className="flex flex-col w-full mt-10 space-y-16">
-      <section className="max-w-6xl mx-auto px-6 w-full">
-        <h2 className="pixel-title text-xl md:text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
-          Games
-        </h2>
+    <TerminalShell currentPath="/games">
+      <section className="max-w-6xl mx-auto px-6 py-6 w-full">
 
         {/* Main container */}
         <div
-          className="relative overflow-hidden rounded-3xl border border-gray-800 min-h-[72vh]"
+          className="relative overflow-hidden rounded-xl border border-gray-800 min-h-[70vh]"
           style={{ isolation: 'isolate' }}
         >
           {/* ── Blurred background image ── */}
@@ -218,7 +217,7 @@ export default function GamesPage() {
                     >
                       {/* Icon */}
                       <div
-                        className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 border"
+                        className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border"
                         style={{ borderColor: isActive ? `${game.accentFrom}55` : 'rgba(255,255,255,0.1)' }}
                       >
                         <img src={game.icon} alt={game.title} className="w-full h-full object-cover" />
@@ -238,7 +237,7 @@ export default function GamesPage() {
                       {/* Active indicator */}
                       {isActive && (
                         <div
-                          className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          className="ml-auto w-1.5 h-1.5 rounded-full shrink-0"
                           style={{ background: game.accentFrom, boxShadow: `0 0 8px ${game.accentFrom}` }}
                         />
                       )}
@@ -264,8 +263,6 @@ export default function GamesPage() {
           </div>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </TerminalShell>
   );
 }

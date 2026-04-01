@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import TerminalShell from './TerminalShell';
 
 // ── Tech data ──────────────────────────────────────────────────────────────
 const CDN = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
@@ -16,7 +17,7 @@ const FAMILIAR = [
   { name: 'aws',        icon: `${CDN}/amazonwebservices/amazonwebservices-original-wordmark.svg` },
 ];
 
-// ── Sub-components ─────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────────
 function TechTree({ label, items }: { label: string; items: typeof MOST_USED }) {
   return (
     <div>
@@ -40,7 +41,7 @@ function LearningTree() {
       <p className="pixel-title text-xs" style={{ color: '#9be564' }}>currently-learning</p>
       <div className="flex items-center gap-2 mt-1.5">
         <span className="pixel-body text-lg text-slate-600 select-none">└──</span>
-        <span className="pixel-body text-xl text-slate-300">shaders, new architectures...</span>
+        <span className="pixel-body text-xl text-slate-300">shaders, new architectures…</span>
       </div>
     </div>
   );
@@ -59,31 +60,36 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   );
 }
 
-// ── Game window card ───────────────────────────────────────────────────────
+// ── Game window card (with hover-expand) ───────────────────────────────────
 interface GameWindowProps {
   filename: string;
   title: string;
   description: string;
+  expandedText: string;
   icon: string;
   bgImage: string;
   tags: string[];
   accentColor: string;
 }
 
-function GameWindow({ filename, title, description, icon, bgImage, tags, accentColor }: GameWindowProps) {
+function GameWindow({
+  filename, title, description, expandedText, icon, bgImage, tags, accentColor,
+}: GameWindowProps) {
+  const [hovered, setHovered] = useState(false);
+
   return (
     <a
       href="/games"
-      className="block overflow-hidden transition-all duration-200"
+      className="block overflow-hidden transition-colors duration-200"
       style={{
         borderRadius: 4,
-        border: `1px solid ${accentColor}28`,
+        border: `1px solid ${hovered ? accentColor + '50' : accentColor + '25'}`,
         background: '#06070d',
         textDecoration: 'none',
-        boxShadow: `0 0 0 0 ${accentColor}00`,
+        transition: 'border-color 0.2s ease',
       }}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${accentColor}55`; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${accentColor}28`; }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       {/* Window title bar */}
       <div
@@ -91,7 +97,7 @@ function GameWindow({ filename, title, description, icon, bgImage, tags, accentC
         style={{ background: '#08090e', borderBottom: `1px solid ${accentColor}18` }}
       >
         <span className="pixel-title text-xs" style={{ color: `${accentColor}77` }}>▶</span>
-        <span className="pixel-title text-xs" style={{ color: '#3a4556', fontSize: '0.6rem' }}>{filename}</span>
+        <span className="pixel-title" style={{ fontSize: '0.6rem', color: '#3a4556' }}>{filename}</span>
         <div className="flex-1" />
         {tags.map(t => (
           <span
@@ -109,9 +115,8 @@ function GameWindow({ filename, title, description, icon, bgImage, tags, accentC
         ))}
       </div>
 
-      {/* Content row */}
+      {/* Compact row — always visible */}
       <div className="flex items-center gap-4 p-3 md:p-4">
-        {/* Thumbnail */}
         <div className="relative w-20 h-14 shrink-0 overflow-hidden" style={{ borderRadius: 3, border: `1px solid ${accentColor}18` }}>
           <img
             src={bgImage}
@@ -124,12 +129,8 @@ function GameWindow({ filename, title, description, icon, bgImage, tags, accentC
           </div>
         </div>
 
-        {/* Text */}
         <div className="flex-1 min-w-0">
-          <p
-            className="pixel-title mb-1"
-            style={{ fontSize: '0.58rem', color: accentColor, letterSpacing: '0.08em' }}
-          >{title}</p>
+          <p className="pixel-title mb-1" style={{ fontSize: '0.58rem', color: accentColor, letterSpacing: '0.08em' }}>{title}</p>
           <p
             className="pixel-body text-xl text-slate-500 leading-snug"
             style={{
@@ -141,13 +142,93 @@ function GameWindow({ filename, title, description, icon, bgImage, tags, accentC
           >{description}</p>
         </div>
 
-        {/* Arrow */}
-        <span className="pixel-title text-xs shrink-0" style={{ color: `${accentColor}55` }}>→</span>
+        <span
+          className="pixel-title text-xs shrink-0 transition-transform duration-300"
+          style={{ color: `${accentColor}55`, transform: hovered ? 'rotate(90deg)' : 'none' }}
+        >→</span>
+      </div>
+
+      {/* Expanded section — slides open on hover */}
+      <div
+        style={{
+          maxHeight: hovered ? '520px' : '0',
+          opacity: hovered ? 1 : 0,
+          overflow: 'hidden',
+          transition: 'max-height 0.5s ease, opacity 0.35s ease',
+        }}
+      >
+        <div
+          className="px-4 pb-5 pt-1 space-y-3"
+          style={{ borderTop: `1px solid ${accentColor}18` }}
+        >
+          <p className="pixel-body text-xl text-slate-400 leading-relaxed">{expandedText}</p>
+          <p className="pixel-body text-xl text-slate-500 leading-relaxed">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+            ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
+          <p className="pixel-body text-xl text-slate-500 leading-relaxed">
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+            deserunt mollit anim id est laborum.
+          </p>
+          <div className="pt-1">
+            <span
+              className="pixel-title"
+              style={{
+                fontSize: '0.55rem',
+                color: accentColor,
+                border: `1px solid ${accentColor}40`,
+                background: `${accentColor}0c`,
+                padding: '4px 10px',
+                borderRadius: 3,
+              }}
+            >open project →</span>
+          </div>
+        </div>
       </div>
 
       {/* Accent bottom */}
-      <div style={{ height: 1, background: `linear-gradient(90deg, ${accentColor}55, transparent 70%)` }} />
+      <div style={{ height: 1, background: `linear-gradient(90deg, ${accentColor}${hovered ? '70' : '40'}, transparent 70%)`, transition: 'all 0.3s' }} />
     </a>
+  );
+}
+
+// ── Static intro (full terminal state, no animation) ──────────────────────
+function Cmd({ text }: { text: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
+      <span className="pixel-title text-xs" style={{ color: '#8ecae6' }}>{text}</span>
+    </div>
+  );
+}
+
+function Out({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="pixel-body text-xl text-slate-300 leading-snug">{children}</div>
+  );
+}
+
+function StaticIntro() {
+  return (
+    <div className="space-y-0">
+      <Cmd text="whoami" />
+      <Out>Hi, I&apos;m <span style={{ color: '#8ecae6' }}>Diego.</span></Out>
+      <div className="h-2" />
+      <Cmd text="cat role.txt" />
+      <Out>Fullstack Software Engineer &amp; Game Developer</Out>
+      <div className="h-2" />
+      <Cmd text="npm list --skills" />
+      <div className="h-2" />
+      <Out><TechTree label="most-used"     items={MOST_USED} /></Out>
+      <div className="h-2" />
+      <Out><TechTree label="familiar-with" items={FAMILIAR}  /></Out>
+      <div className="h-2" />
+      <Out><LearningTree /></Out>
+      <div className="h-2" />
+      <Cmd text="ls games/" />
+    </div>
   );
 }
 
@@ -246,7 +327,7 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
         <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
         <span className="pixel-title text-xs"             style={{ color: '#8ecae6' }}>{currentCmd}</span>
         <span
-          className="inline-block w-1.75 h-3.5 align-middle"
+          className="inline-block w-1.5 h-3.5 align-middle"
           style={{ background: (typing || blink) ? '#8ecae6' : 'transparent' }}
         />
       </div>
@@ -254,75 +335,19 @@ function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () 
   );
 }
 
-// ── Inline prompt ──────────────────────────────────────────────────────────
-function InlinePrompt({ onCommand }: { onCommand: (cmd: string) => void }) {
-  const [value,   setValue]   = useState('');
-  const [history, setHistory] = useState<string[]>([]);
-  const [histIdx, setHistIdx] = useState(-1);
-  const inputRef              = useRef<HTMLInputElement>(null);
-
-  useEffect(() => { inputRef.current?.focus(); }, []);
-
-  const submit = () => {
-    const cmd = value.trim();
-    if (!cmd) return;
-    setHistory(h => [cmd, ...h]);
-    setHistIdx(-1);
-    setValue('');
-    onCommand(cmd);
-  };
-
-  const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') { submit(); return; }
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      const next = Math.min(histIdx + 1, history.length - 1);
-      setHistIdx(next);
-      setValue(history[next] ?? '');
-    }
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      const next = Math.max(histIdx - 1, -1);
-      setHistIdx(next);
-      setValue(next === -1 ? '' : history[next]);
-    }
-  };
-
-  return (
-    <div
-      className="flex items-center gap-2 cursor-text"
-      onClick={() => inputRef.current?.focus()}
-    >
-      <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
-      <input
-        ref={inputRef}
-        value={value}
-        onChange={e => { setValue(e.target.value); setHistIdx(-1); }}
-        onKeyDown={onKeyDown}
-        className="flex-1 bg-transparent outline-none pixel-title text-xs"
-        style={{ color: '#8ecae6', caretColor: '#8ecae6' }}
-        placeholder="type a command... (try 'help')"
-        spellCheck={false}
-        autoComplete="off"
-        autoCorrect="off"
-      />
-    </div>
-  );
-}
-
-// ── Nav ────────────────────────────────────────────────────────────────────
-const NAV = [
-  { label: '~/',       path: '/'       },
-  { label: '~/about',  path: '/about'  },
-  { label: '~/games',  path: '/games'  },
-  { label: '~/resume', path: '/resume' },
-];
+// ── sessionStorage key ─────────────────────────────────────────────────────
+const INTRO_KEY = 'portfolio_intro_shown';
 
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function Home() {
-  const [showContent, setShowContent] = useState(false);
-  const [cmdHistory,  setCmdHistory]  = useState<{ cmd: string; out: React.ReactNode }[]>([]);
-  const bodyRef                       = useRef<HTMLDivElement>(null);
+  const [introSeen]    = useState(() => sessionStorage.getItem(INTRO_KEY) === '1');
+  const [showContent,  setShowContent]  = useState(introSeen);
+  const bodyRef                         = useRef<HTMLDivElement>(null);
+
+  // Mark intro as seen immediately so back-navigation skips it
+  useEffect(() => {
+    if (!introSeen) sessionStorage.setItem(INTRO_KEY, '1');
+  }, []);
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -330,128 +355,42 @@ export default function Home() {
     }, 40);
   };
 
-  useEffect(() => { if (showContent)        scrollToBottom(); }, [showContent]);
-  useEffect(() => { if (cmdHistory.length)  scrollToBottom(); }, [cmdHistory]);
-
-  const gotoPage = (path: string) => {
-    window.history.pushState({}, '', path);
-    window.dispatchEvent(new PopStateEvent('popstate'));
-  };
-
-  const handleCommand = (raw: string) => {
-    const cmd = raw.toLowerCase().trim().replace(/^(cd |goto )/, '');
-
-    if (cmd === 'clear') { setCmdHistory([]); return; }
-
-    const navMap: Record<string, string> = {
-      about: '/about', games: '/games', resume: '/resume',
-    };
-
-    if (navMap[cmd]) {
-      setCmdHistory(h => [...h, {
-        cmd: raw,
-        out: <span className="pixel-body text-xl" style={{ color: '#9be564' }}>→ Navigating to {navMap[cmd]}...</span>,
-      }]);
-      setTimeout(() => gotoPage(navMap[cmd]), 350);
-      return;
-    }
-
-    const responses: Record<string, React.ReactNode> = {
-      help: (
-        <div className="pixel-body text-xl text-slate-400 space-y-0.5">
-          <p><span style={{ color: '#8ecae6' }}>about</span>   — open about page</p>
-          <p><span style={{ color: '#8ecae6' }}>games</span>   — open games page</p>
-          <p><span style={{ color: '#8ecae6' }}>resume</span>  — open resume</p>
-          <p><span style={{ color: '#8ecae6' }}>ls</span>      — list pages</p>
-          <p><span style={{ color: '#8ecae6' }}>whoami</span>  — who is Diego</p>
-          <p><span style={{ color: '#8ecae6' }}>clear</span>   — clear command history</p>
-          <p><span style={{ color: '#8ecae6' }}>pwd</span>     — working directory</p>
-        </div>
-      ),
-      whoami: (
-        <span className="pixel-body text-xl text-slate-300">
-          Diego Gonçalves Piovezan Santana — Fullstack Engineer &amp; Game Developer.
-        </span>
-      ),
-      ls: (
-        <div className="flex gap-5 pixel-body text-xl">
-          <a href="/about"  style={{ color: '#8ecae6' }} className="hover:underline">about/</a>
-          <a href="/games"  style={{ color: '#8ecae6' }} className="hover:underline">games/</a>
-          <a href="/resume" style={{ color: '#8ecae6' }} className="hover:underline">resume/</a>
-        </div>
-      ),
-      pwd:  <span className="pixel-body text-xl" style={{ color: '#8ecae6' }}>/home/diego/portfolio</span>,
-      home: <span className="pixel-body text-xl text-slate-400">Already at ~/</span>,
-      '~':  <span className="pixel-body text-xl text-slate-400">Already at ~/</span>,
-    };
-
-    const out = responses[cmd] ?? (
-      <span className="pixel-body text-xl" style={{ color: '#f87171' }}>
-        command not found: <span style={{ color: '#fca5a5' }}>{raw}</span>
-        {' '}— type <span style={{ color: '#8ecae6' }}>help</span> for commands.
-      </span>
-    );
-
-    setCmdHistory(h => [...h, { cmd: raw, out }]);
-  };
+  useEffect(() => { if (showContent) scrollToBottom(); }, [showContent]);
 
   return (
-    <div
-      className="h-screen flex flex-col overflow-hidden"
-      style={{ background: '#0a0c14' }}
-    >
-      {/* ── Title bar ── */}
-      <div
-        className="flex items-center gap-2 px-4 py-3 shrink-0"
-        style={{ borderBottom: '1px solid rgba(142,202,230,0.12)', background: '#07080f' }}
-      >
-        <span className="w-3 h-3 rounded-full bg-red-500/70" />
-        <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
-        <span className="w-3 h-3 rounded-full bg-green-500/70" />
-        <span className="pixel-title text-xs text-slate-600 ml-2 mr-auto">diego@portfolio:~$</span>
+    <TerminalShell ref={bodyRef} currentPath="/">
+      <div className="px-6 py-6 md:px-10 md:py-8">
 
-        <nav className="hidden sm:flex items-center gap-4">
-          {NAV.map(n => (
-            <a
-              key={n.path}
-              href={n.path}
-              className="pixel-title text-xs transition-colors hover:text-white"
-              style={{ color: n.path === '/' ? '#8ecae6' : '#475569' }}
-            >
-              {n.label}
-            </a>
-          ))}
-        </nav>
-      </div>
+        {/* First visit: animated intro. Return visit: full static output instantly. */}
+        {!introSeen
+          ? <TerminalIntro onDone={() => setShowContent(true)} onScroll={scrollToBottom} />
+          : <StaticIntro />
+        }
 
-      {/* ── Scrollable body ── */}
-      <div
-        ref={bodyRef}
-        className="flex-1 overflow-y-auto min-h-0 px-6 py-6 md:px-10 md:py-8"
-      >
-        {/* Auto-typed intro */}
-        <TerminalIntro onDone={() => setShowContent(true)} onScroll={scrollToBottom} />
-
-        {/* Games + contacts — appear as terminal output of `ls games/` */}
+        {/* Games + contacts */}
         {showContent && (
-          <FadeIn delay={80}>
+          <FadeIn delay={introSeen ? 0 : 80}>
             <div className="mt-3 space-y-2">
-              <p className="pixel-body text-lg" style={{ color: '#2e3d52', userSelect: 'none' }}>
+              <p className="pixel-body text-lg select-none" style={{ color: '#2a3544' }}>
                 {'  drwxr-xr-x  2  diego  staff'}
               </p>
+
               <GameWindow
                 filename="games/potato-clicker"
                 title="POTATO CLICKER"
-                description="An idle clicker game where you grow your potato empire. Click to harvest, buy upgrades, and watch your potatoes multiply!"
+                description="An idle clicker game where you grow your potato empire."
+                expandedText="Click to harvest, buy upgrades, and watch your potatoes multiply across increasingly complex prestige loops."
                 icon="/src/assets/icon-potato.png"
                 bgImage="/src/assets/bg-potato.png"
                 tags={['idle', 'godot', 'in-dev']}
                 accentColor="#c2ce2b"
               />
+
               <GameWindow
                 filename="games/solo-blocking"
                 title="SOLO BLOCKING"
-                description="A fast combat prototype with tight controls and responsive block mechanics."
+                description="A fast combat prototype with tight block mechanics."
+                expandedText="Responsive controls, impact feedback, and movement polish are the core focus of this action combat prototype."
                 icon="/src/assets/icon-solo.png"
                 bgImage="/src/assets/bg-solo.png"
                 tags={['combat', 'godot', 'in-dev']}
@@ -459,27 +398,27 @@ export default function Home() {
               />
             </div>
 
-            {/* Contacts as terminal key-value output */}
+            {/* Contacts */}
             <div className="mt-6 pt-4" style={{ borderTop: '1px solid rgba(142,202,230,0.06)' }}>
               <p className="pixel-title mb-3" style={{ fontSize: '0.58rem', color: '#2e3d52', letterSpacing: '0.1em' }}># contacts</p>
               <div className="space-y-1.5">
                 {[
-                  { key: 'github',   value: 'DevDiegolas',                href: 'https://github.com/DevDiegolas',                               external: true  },
-                  { key: 'linkedin', value: 'diego-gonçalves-piovezan',   href: 'https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/', external: true  },
-                  { key: 'resume',   value: '~/resume',                   href: '/resume',                                                      external: false },
-                ].map(({ key, value, href, external }) => (
+                  { key: 'github',   val: 'DevDiegolas',                    href: 'https://github.com/DevDiegolas',                              ext: true  },
+                  { key: 'linkedin', val: 'diego-gonçalves-piovezan',        href: 'https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/', ext: true  },
+                  { key: 'resume',   val: '~/resume',                        href: '/resume',                                                     ext: false },
+                ].map(({ key, val, href, ext }) => (
                   <div key={key} className="flex items-center gap-2">
-                    <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52', width: 60, textAlign: 'right' }}>{key}</span>
+                    <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52', width: 62, textAlign: 'right' }}>{key}</span>
                     <span className="pixel-body text-lg select-none" style={{ color: '#2e3d52' }}>→</span>
                     <a
                       href={href}
-                      target={external ? '_blank' : undefined}
-                      rel={external ? 'noreferrer' : undefined}
+                      target={ext ? '_blank' : undefined}
+                      rel={ext ? 'noreferrer' : undefined}
                       className="pixel-body text-xl transition-colors"
                       style={{ color: '#4a5f78' }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#cbd5e1'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#4a5f78'; }}
-                    >{value}</a>
+                    >{val}</a>
                   </div>
                 ))}
               </div>
@@ -487,30 +426,8 @@ export default function Home() {
           </FadeIn>
         )}
 
-        {/* Command history — rendered inline in the flow */}
-        {cmdHistory.length > 0 && (
-          <div className="mt-6 space-y-4">
-            {cmdHistory.map((entry, i) => (
-              <div key={i}>
-                <div className="flex items-center gap-2">
-                  <span className="pixel-title text-xs select-none" style={{ color: '#4ade80' }}>$</span>
-                  <span className="pixel-title text-xs" style={{ color: '#8ecae6' }}>{entry.cmd}</span>
-                </div>
-                <div className="mt-1 ml-4">{entry.out}</div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Inline prompt — appears right where the terminal stops */}
-        {showContent && (
-          <div className="mt-4">
-            <InlinePrompt onCommand={handleCommand} />
-          </div>
-        )}
-
         <div className="h-6" />
       </div>
-    </div>
+    </TerminalShell>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import Header from './components/Header';
 import Home from './components/Home';
 import ResumePage from './components/ResumePage';
 import GamesPage from './components/GamesPage';
@@ -98,8 +97,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 font-sans text-gray-200">
-      {path !== '/' && <Header />}
+    <div className="h-screen overflow-hidden font-sans text-gray-200">
       <main key={path} className={`page-transition ${direction === 'forward' ? 'page-transition-forward' : 'page-transition-back'}`}>
         {content}
       </main>

@@ -1,13 +1,10 @@
-import Footer from './Footer';
+import TerminalShell from './TerminalShell';
 import resumePdf from '../assets/DIEGORESUME.pdf';
 
 export default function ResumePage() {
   return (
-    <div className="flex flex-col w-full mt-10 space-y-16">
-      <section id="resume" className="max-w-6xl mx-auto px-6 w-full">
-        <h2 className="pixel-title text-xl md:text-2xl font-bold text-white mb-6 border-b border-gray-800 pb-4">
-          Resume
-        </h2>
+    <TerminalShell currentPath="/resume">
+      <section id="resume" className="max-w-6xl mx-auto px-6 py-8 w-full">
 
         <div className="bg-gray-900/80 border border-gray-800 rounded-2xl p-6 md:p-8 space-y-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -126,8 +123,6 @@ export default function ResumePage() {
           </div>
         </div>
       </section>
-
-      <Footer />
-    </div>
+    </TerminalShell>
   );
 }
