@@ -32,8 +32,8 @@ function SheetHeader({ children }: { children: React.ReactNode }) {
 // ── Info row ───────────────────────────────────────────────────────────────
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
-      <span className="pixel-title text-xs w-32 shrink-0 text-right pt-1" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
+    <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
+      <span className="pixel-title text-xs w-full sm:w-32 shrink-0 sm:text-right sm:pt-1" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
       <span className="pixel-body text-xl leading-tight" style={{ color: 'var(--t-text)' }}>{value}</span>
     </div>
   );
@@ -42,8 +42,8 @@ function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
 // ── Skill row ──────────────────────────────────────────────────────────────
 function SkillRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
-      <span className="pixel-title text-xs w-32 shrink-0 text-right" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
+    <div className="flex flex-col sm:flex-row sm:items-start gap-1.5 sm:gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
+      <span className="pixel-title text-xs w-full sm:w-32 shrink-0 sm:text-right" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
       <span className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-primary)' }}>{value}</span>
     </div>
   );
@@ -94,11 +94,11 @@ function QuestEntry({
 export default function ResumePage() {
   return (
     <TerminalShell currentPath="/resume">
-      <section className="max-w-6xl mx-auto px-6 py-8 w-full">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full">
 
         {/* ── Quest Log frame ── */}
         <div
-          className="relative rounded-2xl p-6 md:p-8 space-y-8"
+          className="relative rounded-2xl p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"
           style={{
             background: 'var(--t-frame-bg)',
             border: '2px solid var(--t-frame)',
@@ -111,7 +111,7 @@ export default function ResumePage() {
           <Corner pos="br" />
 
           {/* ── Sheet title + download ── */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 -mt-2">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 -mt-1 sm:-mt-2">
             <div className="text-center md:text-left">
               <p
                 className="pixel-title text-sm md:text-base tracking-widest"
@@ -122,7 +122,7 @@ export default function ResumePage() {
               <p className="pixel-body text-xl mt-1" style={{ color: 'var(--t-text)' }}>
                 Fullstack Software Engineer &amp; Game Developer
               </p>
-              <p className="pixel-body text-base mt-0.5" style={{ color: 'var(--t-frame-dark)' }}>
+              <p className="pixel-body text-sm sm:text-base mt-0.5 wrap-break-word" style={{ color: 'var(--t-frame-dark)' }}>
                 Guaruja, SP, Brazil &nbsp;|&nbsp; +55 (13) 98138-4361 &nbsp;|&nbsp; diegogpssth@gmail.com
               </p>
             </div>

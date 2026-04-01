@@ -7,9 +7,9 @@ function StatBar({
   label: string; value: number; color: string; spec: string; delay: number;
 }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       <span
-        className="pixel-title text-xs w-24 shrink-0 text-right"
+        className="pixel-title text-[0.6rem] sm:text-xs w-16 sm:w-24 shrink-0 text-right"
         style={{ color: 'var(--t-frame-dark)' }}
       >
         {label}
@@ -35,7 +35,7 @@ function StatBar({
           }}
         />
       </div>
-      <span className="pixel-title text-xs w-6 shrink-0" style={{ color }}>{value}</span>
+      <span className="pixel-title text-[0.6rem] sm:text-xs w-6 shrink-0" style={{ color }}>{value}</span>
       <span className="pixel-body text-lg hidden md:block w-48 truncate" style={{ color: 'var(--t-text-dim)' }}>{spec}</span>
     </div>
   );
@@ -52,8 +52,8 @@ const STATS = [
 // ── Info row ───────────────────────────────────────────────────────────────
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
-      <span className="pixel-title text-xs w-20 shrink-0 text-right" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
+    <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 py-1.5 border-b" style={{ borderColor: 'var(--t-frame-line-dark)' }}>
+      <span className="pixel-title text-xs w-full sm:w-20 shrink-0 sm:text-right" style={{ color: 'var(--t-frame-dark)' }}>{label}</span>
       <span className="pixel-body text-xl leading-tight" style={{ color: 'var(--t-text)' }}>{value}</span>
     </div>
   );
@@ -91,11 +91,11 @@ function SheetHeader({ children }: { children: React.ReactNode }) {
 export default function AboutPage() {
   return (
     <TerminalShell currentPath="/about">
-      <section className="max-w-6xl mx-auto px-6 py-8 w-full">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full">
 
         {/* ── Character Sheet frame ── */}
         <div
-          className="relative rounded-2xl p-6 md:p-8 space-y-8"
+          className="relative rounded-2xl p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"
           style={{
             background: 'var(--t-frame-bg)',
             border: '2px solid var(--t-frame)',

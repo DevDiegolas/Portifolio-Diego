@@ -113,8 +113,9 @@ function GameWindow({
         style={{ background: 'var(--t-bg-bar)', borderBottom: `1px solid ${accentColor}18` }}
       >
         <span className="pixel-title text-xs" style={{ color: `${accentColor}77` }}>▶</span>
-        <span className="pixel-title" style={{ fontSize: '0.6rem', color: 'var(--t-text-dimmer)' }}>{filename}</span>
+        <span className="pixel-title truncate" style={{ fontSize: '0.6rem', color: 'var(--t-text-dimmer)' }}>{filename}</span>
         <div className="flex-1" />
+        <div className="hidden sm:flex items-center gap-1">
         {tags.map(t => (
           <span
             key={t}
@@ -129,10 +130,11 @@ function GameWindow({
             }}
           >{t}</span>
         ))}
+        </div>
       </div>
 
       {/* Compact row — always visible */}
-      <div className="flex items-center gap-4 p-3 md:p-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 md:p-4">
         <div className="relative w-20 h-14 shrink-0 overflow-hidden" style={{ borderRadius: 3, border: `1px solid ${accentColor}18` }}>
           <img
             src={bgImage}
@@ -160,7 +162,7 @@ function GameWindow({
         </div>
 
         <span
-          className="pixel-title text-xs shrink-0 transition-transform duration-300"
+          className="pixel-title text-xs shrink-0 transition-transform duration-300 hidden sm:inline"
           style={{ color: `${accentColor}55`, transform: hovered ? 'rotate(90deg)' : 'none' }}
         >→</span>
       </div>
@@ -383,7 +385,7 @@ export default function Home() {
 
   return (
     <TerminalShell ref={bodyRef} currentPath="/">
-      <div className="px-6 py-6 md:px-10 md:py-8">
+      <div className="px-4 sm:px-6 py-5 sm:py-6 md:px-10 md:py-8">
 
         {/* First visit: animated intro. Return visit: full static output instantly. */}
         {!introSeen
@@ -431,14 +433,14 @@ export default function Home() {
                   { key: 'linkedin', val: 'diego-gonçalves-piovezan',        href: 'https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/', ext: true  },
                   { key: 'resume',   val: '~/resume',                        href: '/resume',                                                     ext: false },
                 ].map(({ key, val, href, ext }) => (
-                  <div key={key} className="flex items-center gap-2">
-                    <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dimmer)', width: 62, textAlign: 'right' }}>{key}</span>
-                    <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dimmer)' }}>→</span>
+                  <div key={key} className="flex items-center gap-2 min-w-0">
+                    <span className="pixel-body text-lg select-none shrink-0" style={{ color: 'var(--t-text-dimmer)', width: 62, textAlign: 'right' }}>{key}</span>
+                    <span className="pixel-body text-lg select-none shrink-0" style={{ color: 'var(--t-text-dimmer)' }}>→</span>
                     <a
                       href={href}
                       target={ext ? '_blank' : undefined}
                       rel={ext ? 'noreferrer' : undefined}
-                      className="pixel-body text-xl transition-colors"
+                      className="pixel-body text-xl transition-colors truncate"
                       style={{ color: 'var(--t-text-dim)' }}
                       onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--t-text)'; }}
                       onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--t-text-dim)'; }}

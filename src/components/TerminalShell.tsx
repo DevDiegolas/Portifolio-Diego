@@ -191,20 +191,20 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
 
         {/* ── Title bar ── */}
         <div
-          className="flex items-center gap-2 px-4 py-3 shrink-0"
+          className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 shrink-0"
           style={{ borderBottom: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
         >
           <span className="w-3 h-3 rounded-full bg-red-500/70" />
           <span className="w-3 h-3 rounded-full bg-yellow-400/70" />
           <span className="w-3 h-3 rounded-full bg-green-500/70" />
-          <span className="pixel-title text-xs ml-2 mr-auto" style={{ color: 'var(--t-text-dim)' }}>diego@portfolio:~$</span>
+          <span className="pixel-title text-xs ml-2 mr-auto hidden sm:inline" style={{ color: 'var(--t-text-dim)' }}>diego@portfolio:~$</span>
 
-          <nav className="hidden sm:flex items-center gap-4">
+          <nav className="flex items-center gap-3 sm:gap-4 overflow-x-auto max-w-[52vw] sm:max-w-none">
             {NAV.map(n => (
               <a
                 key={n.path}
                 href={n.path}
-                className="pixel-title text-xs transition-colors hover:text-white"
+                className="pixel-title text-[0.62rem] sm:text-xs whitespace-nowrap transition-colors hover:text-white"
                 style={{ color: n.path === currentPath ? 'var(--t-primary)' : 'var(--t-text-dim)' }}
               >
                 {n.label}
@@ -219,7 +219,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
 
           {/* Command log — appended after page content */}
           {cmdLog.length > 0 && (
-            <div className="px-6 pb-6 md:px-10 space-y-4">
+            <div className="px-3 sm:px-6 pb-5 sm:pb-6 md:px-10 space-y-4">
               {cmdLog.map((entry, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-2">
@@ -235,7 +235,7 @@ const TerminalShell = React.forwardRef<HTMLDivElement, Props>(
 
         {/* ── Fixed command input ── */}
         <div
-          className="flex items-center gap-2 px-6 py-4 shrink-0"
+          className="flex items-center gap-2 px-3 sm:px-6 py-3 sm:py-4 shrink-0"
           style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 12%, transparent)', background: 'var(--t-bg-bar)' }}
           onClick={() => inputRef.current?.focus()}
         >

@@ -78,11 +78,11 @@ export default function GamesPage() {
 
   return (
     <TerminalShell currentPath="/games">
-      <section className="max-w-6xl mx-auto px-6 py-6 w-full">
+      <section className="max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 w-full">
 
         {/* Main container */}
         <div
-          className="relative overflow-hidden rounded-xl border min-h-[70vh]"
+          className="relative overflow-hidden rounded-xl border min-h-[calc(100vh-9.5rem)] sm:min-h-[70vh]"
           style={{ borderColor: 'color-mix(in srgb, var(--t-primary) 16%, transparent)', isolation: 'isolate' }}
         >
           {/* ── Blurred background image ── */}
@@ -120,10 +120,10 @@ export default function GamesPage() {
           />
 
           {/* ── Content grid ── */}
-          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_260px] min-h-[72vh]">
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[1fr_280px] min-h-[calc(100vh-9.5rem)] sm:min-h-[72vh]">
 
             {/* LEFT — Game info */}
-            <div className="p-8 md:p-12 flex flex-col justify-between">
+            <div className="p-4 sm:p-6 md:p-10 lg:p-12 flex flex-col justify-between">
               {/* Top: genre + title + description */}
               <div>
                 <p
@@ -141,18 +141,18 @@ export default function GamesPage() {
                   className="transition-all duration-300"
                   style={{ opacity: transitioning ? 0 : 1, transform: transitioning ? 'translateY(6px)' : 'translateY(0)' }}
                 >
-                  <h3 className="pixel-title text-3xl md:text-5xl leading-tight" style={{ color: 'var(--t-text)' }}>
+                  <h3 className="pixel-title text-2xl sm:text-3xl md:text-5xl leading-tight" style={{ color: 'var(--t-text)' }}>
                     {activeGame.title}
                   </h3>
 
-                  <p className="pixel-body text-xl md:text-2xl mt-5 max-w-lg leading-relaxed" style={{ color: 'var(--t-text-muted)' }}>
+                  <p className="pixel-body text-lg sm:text-xl md:text-2xl mt-4 sm:mt-5 max-w-lg leading-relaxed" style={{ color: 'var(--t-text-muted)' }}>
                     {activeGame.description}
                   </p>
                 </div>
               </div>
 
               {/* Bottom: status badge + play button */}
-              <div className="mt-10 flex items-center gap-4 flex-wrap">
+              <div className="mt-7 sm:mt-10 flex items-center gap-3 sm:gap-4 flex-wrap">
                 <span
                   className="pixel-title text-xs px-3 py-1.5 rounded border"
                   style={{
@@ -167,7 +167,7 @@ export default function GamesPage() {
                 <button
                   type="button"
                   disabled
-                  className="pixel-title text-xs px-6 py-3 rounded-md border cursor-not-allowed opacity-50"
+                  className="pixel-title text-xs px-4 sm:px-6 py-2.5 sm:py-3 rounded-md border cursor-not-allowed opacity-50"
                   style={{ borderColor: `${activeGame.accentFrom}44`, background: `${activeGame.accentFrom}22`, color: 'var(--t-text)' }}
                 >
                   ▶ Play Game
@@ -178,7 +178,7 @@ export default function GamesPage() {
             {/* RIGHT — Roulette wheel */}
             <div
               ref={rouletteRef}
-              className="border-l backdrop-blur-sm flex flex-col"
+              className="border-t lg:border-t-0 lg:border-l backdrop-blur-sm flex flex-col"
               style={{ overscrollBehavior: 'contain', borderColor: 'color-mix(in srgb, var(--t-text) 12%, transparent)', background: 'color-mix(in srgb, var(--t-bg-darker) 70%, transparent)' }}
             >
               {/* Header */}
@@ -198,7 +198,7 @@ export default function GamesPage() {
               </button>
 
               {/* Game cards */}
-              <div className="flex-1 flex flex-col justify-center gap-2 px-3 py-2 overflow-hidden">
+              <div className="flex-1 flex flex-col justify-center gap-2 px-3 py-2 overflow-hidden min-h-60 sm:min-h-64">
                 {games.map((game, index) => {
                   const offset = index - selected;
                   const isActive = offset === 0;
