@@ -1,6 +1,38 @@
-import { useState } from 'react';
+// ── Shiny gold styles (injected once) ─────────────────────────────────────
+const goldStyles = `
+@keyframes shiny-slide {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+.shiny-gold {
+  background: linear-gradient(
+    90deg,
+    #c9a227 0%, #ffd700 20%, #fff8b0 40%,
+    #ffd700 60%, #c9a227 80%, #ffd700 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shiny-slide 3s ease-in-out infinite;
+}
+@keyframes gold-glow {
+  0%, 100% { box-shadow: 0 0 15px #ffd70033, 0 0 30px #ffd70015, inset 0 0 15px #ffd70008; }
+  50%      { box-shadow: 0 0 22px #ffd70055, 0 0 44px #ffd70025, inset 0 0 22px #ffd70012; }
+}
+.gold-card {
+  border: 2px solid #ffd700;
+  animation: gold-glow 3s ease-in-out infinite;
+  background: linear-gradient(
+    135deg,
+    var(--t-bg-card) 0%,
+    color-mix(in srgb, #ffd700 6%, var(--t-bg-card)) 50%,
+    var(--t-bg-card) 100%
+  );
+}
+`;
 
-// ── Corner decoration ──────────────────────────────────────────────────────
+// ── Corner decoration ─────────────────────────────────────────────────────
 function Corner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   const classes = {
     tl: 'top-0 left-0 border-t-2 border-l-2',
@@ -16,7 +48,7 @@ function Corner({ pos }: { pos: 'tl' | 'tr' | 'bl' | 'br' }) {
   );
 }
 
-// ── Section header ─────────────────────────────────────────────────────────
+// ── Section header ────────────────────────────────────────────────────────
 function SheetHeader({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-4">
@@ -28,82 +60,64 @@ function SheetHeader({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── Game card ──────────────────────────────────────────────────────────────
-function GameCard({
-  name, achievements, total, favorite, platinum = false, showProgress = false,
-}: {
-  name: string;
-  achievements?: number;
-  total?: number;
-  favorite?: boolean;
-  platinum?: boolean;
-  showProgress?: boolean;
-}) {
-  const safeAchievements = achievements ?? 0;
-  const safeTotal = total ?? 0;
-  const pct = safeTotal > 0 ? Math.round((safeAchievements / safeTotal) * 100) : 0;
-  const isPerfect = safeTotal > 0 && safeAchievements === safeTotal;
+// ── Game chip (small tag) ─────────────────────────────────────────────────
+function GameChip({ name, perfect = false }: { name: string; perfect?: boolean }) {
   return (
-    <div
-      className="rounded-lg p-4 space-y-2"
+    <span
+      className="pixel-title text-[0.5rem] px-2 py-1 rounded inline-block"
       style={{
-        background: 'var(--t-bg-card)',
-        border: `1px solid ${favorite ? 'var(--t-primary)' : 'var(--t-frame-line)'}`,
-        boxShadow: favorite ? '0 0 12px color-mix(in srgb, var(--t-primary) 20%, transparent)' : undefined,
+        color: perfect ? 'var(--t-secondary)' : 'var(--t-frame-light)',
+        border: '1px solid var(--t-frame-line)',
+        background: 'var(--t-bg)',
       }}
     >
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          {favorite && <span className="pixel-title text-xs shrink-0" style={{ color: 'var(--t-primary)' }}>♥</span>}
-          <span className="pixel-title text-[0.65rem] sm:text-xs truncate" style={{ color: platinum || isPerfect ? 'var(--t-secondary)' : 'var(--t-frame-light)' }}>
-            {(platinum || isPerfect) && '★ '}{name}
-          </span>
-        </div>
-        {(platinum || isPerfect) && (
-          <span
-            className="pixel-title text-[0.55rem] shrink-0 px-2 py-0.5 rounded"
-            style={{ color: 'var(--t-bg)', background: 'var(--t-secondary)' }}
-          >
-            100%
-          </span>
-        )}
-      </div>
-      {showProgress && (
-        <>
-          <div
-            className="relative h-2.5 rounded-sm overflow-hidden"
-            style={{ background: 'var(--t-bg)', border: '1px solid var(--t-frame-line)' }}
-          >
-            <div
-              className="absolute inset-y-0 left-0 rounded-sm"
-              style={{
-                width: `${pct}%`,
-                background: isPerfect ? 'var(--t-secondary)' : 'var(--t-primary)',
-                boxShadow: `0 0 6px ${isPerfect ? 'var(--t-secondary)' : 'var(--t-primary)'}66`,
-              }}
-            />
-          </div>
-          <p className="pixel-body text-sm" style={{ color: 'var(--t-text-dimmer)' }}>
-            {safeAchievements}/{safeTotal} achievements
-          </p>
-        </>
-      )}
-    </div>
+      {perfect && '★ '}{name}
+    </span>
   );
 }
 
-// ── Page ───────────────────────────────────────────────────────────────────
-export default function GameProfilePage() {
-  const [cubeTab, setCubeTab] = useState<'perfect' | 'finished'>('perfect');
+// ── Data ──────────────────────────────────────────────────────────────────
+const honoredMentionGames = [
+  'Hollow Knight: Silksong',
+  'Rain World',
+  'Outer Wilds',
+  'Blue Prince',
+  'Just Shapes & Beats',
+];
 
+const cubeEscapeGames = [
+  { name: 'Rusty Lake Hotel', perfect: true },
+  { name: 'Rusty Lake: Roots', perfect: true },
+  { name: 'The White Door', perfect: true },
+  { name: 'Samsara Room', perfect: true },
+  { name: 'Underground Blossom', perfect: true },
+  { name: 'The Mr. Rabbit Magic Show', perfect: true },
+  { name: 'Cube Escape Collection', perfect: false },
+  { name: 'Paradox', perfect: false },
+  { name: 'Rusty Lake Paradise', perfect: false },
+  { name: 'The Past Within', perfect: false },
+];
+
+const roomGames = [
+  { name: 'The Room', perfect: true },
+  { name: 'The Room Two', perfect: true },
+  { name: 'The Room Three', perfect: false },
+  { name: 'The Room Four: Old Sins', perfect: true },
+];
+
+// ── Page ──────────────────────────────────────────────────────────────────
+export default function GameProfilePage() {
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full">
+      <style>{goldStyles}</style>
+
       <div
         className="relative rounded-2xl p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"
         style={{
           background: 'var(--t-frame-bg)',
           border: '2px solid var(--t-frame)',
-          boxShadow: '0 0 0 4px var(--t-frame-outer), 0 0 0 6px color-mix(in srgb, var(--t-frame) 27%, transparent)',
+          boxShadow:
+            '0 0 0 4px var(--t-frame-outer), 0 0 0 6px color-mix(in srgb, var(--t-frame) 27%, transparent)',
         }}
       >
         <Corner pos="tl" />
@@ -115,73 +129,78 @@ export default function GameProfilePage() {
         <div className="text-center -mt-2">
           <p
             className="pixel-title text-sm md:text-base tracking-widest"
-            style={{ color: 'var(--t-frame-light)', textShadow: '0 0 16px color-mix(in srgb, var(--t-frame) 53%, transparent)' }}
+            style={{
+              color: 'var(--t-frame-light)',
+              textShadow: '0 0 16px color-mix(in srgb, var(--t-frame) 53%, transparent)',
+            }}
           >
             ◈ GAME PROFILE ◈
           </p>
           <p className="pixel-body text-xl mt-2" style={{ color: 'var(--t-text)' }}>
-            Deus Gamer &nbsp;·&nbsp; Steam Level 20 &nbsp;·&nbsp; 198 Games
+            <span className="shiny-gold" style={{ fontWeight: 700 }}>Deus Gamer</span>
+            &nbsp;·&nbsp; Steam Level 20 &nbsp;·&nbsp; 198 Games
           </p>
           <p className="pixel-body text-base mt-0.5" style={{ color: 'var(--t-text-dim)' }}>
             São Paulo, Brazil &nbsp;|&nbsp; Member since 2018
           </p>
         </div>
 
-        {/* ── FAVORITE GAMES ── */}
+        {/* ── FAVORITE GAME ── */}
         <div>
-          <SheetHeader>FAVORITE GAMES</SheetHeader>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <GameCard name="Hollow Knight" achievements={63} total={63} favorite platinum showProgress />
-            <GameCard name="Hollow Knight: Silksong" favorite />
-            <GameCard name="Rain World" favorite />
-            <GameCard name="Outer Wilds" favorite />
-            <GameCard name="Blue Prince" favorite />
+          <SheetHeader>FAVORITE GAME</SheetHeader>
+          <div className="gold-card rounded-lg p-5 sm:p-6">
+            <div className="flex items-center gap-3">
+              <span className="shiny-gold pixel-title text-base sm:text-lg">♛ Hollow Knight</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 mt-3">
+              <span
+                className="pixel-title text-[0.55rem] px-2.5 py-0.5 rounded"
+                style={{ color: '#1a1a2e', background: '#ffd700' }}
+              >
+                ★ 63/63 ACHIEVEMENTS
+              </span>
+              <span
+                className="pixel-title text-[0.55rem] px-2.5 py-0.5 rounded"
+                style={{ color: '#1a1a2e', background: '#ffd700' }}
+              >
+                PERFECT GAME
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* ── HONORED MENTION ── */}
+        <div>
+          <SheetHeader>HONORED MENTION</SheetHeader>
+          <div
+            className="rounded-lg p-5 space-y-3"
+            style={{
+              background: 'var(--t-bg-card)',
+              border: '1px solid var(--t-primary)',
+              boxShadow: '0 0 12px color-mix(in srgb, var(--t-primary) 20%, transparent)',
+            }}
+          >
+            <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text)' }}>
+              Games that left a mark. Each one earned its place through unforgettable
+              worlds, brilliant design, or moments that stayed long after the credits rolled.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {honoredMentionGames.map(name => (
+                <GameChip key={name} name={name} />
+              ))}
+            </div>
           </div>
         </div>
 
         {/* ── PUZZLE MASTER ── */}
         <div>
           <SheetHeader>PUZZLE MASTER — ESCAPE ROOMS & MYSTERIES</SheetHeader>
-          <p className="pixel-body text-lg mb-4 pl-1" style={{ color: 'var(--t-text-dim)' }}>
-            Every Cube Escape cleared, every Room solved. A true puzzle connoisseur.
-          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            {/* The Room Series */}
-            <div className="space-y-3">
-              <p className="pixel-title text-xs pl-1" style={{ color: 'var(--t-tertiary)' }}>THE ROOM SERIES — ALL CLEARED</p>
-              <GameCard
-                name="The Room"
-                achievements={5}
-                total={5}
-                platinum
-                showProgress
-              />
-              <GameCard
-                name="The Room Two"
-                achievements={7}
-                total={7}
-                platinum
-                showProgress
-              />
-              <GameCard
-                name="The Room Three"
-                achievements={6}
-                total={10}
-                showProgress
-              />
-              <GameCard
-                name="The Room Four: Old Sins"
-                achievements={8}
-                total={8}
-                platinum
-                showProgress
-              />
-            </div>
-
             {/* Cube Escape */}
             <div className="space-y-3">
-              <p className="pixel-title text-xs pl-1" style={{ color: 'var(--t-tertiary)' }}>CUBE ESCAPE / RUSTY LAKE — ALL CLEARED</p>
+              <p className="pixel-title text-xs pl-1" style={{ color: 'var(--t-tertiary)' }}>
+                CUBE ESCAPE / RUSTY LAKE — ALL CLEARED
+              </p>
               <div
                 className="rounded-lg p-5 space-y-3"
                 style={{ background: 'var(--t-bg-card)', border: '1px solid var(--t-frame-line)' }}
@@ -191,63 +210,31 @@ export default function GameProfilePage() {
                   Paradox, every surreal room was escaped, every timeline pieced together. Some with
                   full achievement completion. The lake remembers.
                 </p>
-
-                <div className="flex items-center gap-2 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => setCubeTab('perfect')}
-                    className="pixel-title text-[0.55rem] px-2.5 py-1 rounded border"
-                    style={{
-                      color: cubeTab === 'perfect' ? 'var(--t-bg)' : 'var(--t-secondary)',
-                      background: cubeTab === 'perfect' ? 'var(--t-secondary)' : 'var(--t-bg)',
-                      borderColor: 'var(--t-frame-line)',
-                    }}
-                  >
-                    100%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCubeTab('finished')}
-                    className="pixel-title text-[0.55rem] px-2.5 py-1 rounded border"
-                    style={{
-                      color: cubeTab === 'finished' ? 'var(--t-bg)' : 'var(--t-secondary)',
-                      background: cubeTab === 'finished' ? 'var(--t-secondary)' : 'var(--t-bg)',
-                      borderColor: 'var(--t-frame-line)',
-                    }}
-                  >
-                    Just Finished
-                  </button>
-                </div>
-
                 <div className="flex flex-wrap gap-2">
-                  {(cubeTab === 'perfect'
-                    ? [
-                        'Rusty Lake Hotel',
-                        'Rusty Lake: Roots',
-                        'The White Door',
-                        'Samsara Room',
-                        'Underground Blossom',
-                        'The Mr. Rabbit Magic Show',
-                      ]
-                    : [
-                        'Cube Escape Collection',
-                        'Paradox',
-                        'Rusty Lake Paradise',
-                        'The Past Within',
-                      ]
-                  ).map(title => (
-                    <span
-                      key={title}
-                      className="pixel-title text-[0.5rem] px-2 py-1 rounded"
-                      style={{
-                        color: 'var(--t-secondary)',
-                        border: '1px solid var(--t-frame-line)',
-                        background: 'var(--t-bg)',
-                      }}
-                    >
-                      {cubeTab === 'perfect' ? '★ ' : ''}
-                      {title}
-                    </span>
+                  {cubeEscapeGames.map(g => (
+                    <GameChip key={g.name} name={g.name} perfect={g.perfect} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* The Room */}
+            <div className="space-y-3">
+              <p className="pixel-title text-xs pl-1" style={{ color: 'var(--t-tertiary)' }}>
+                THE ROOM SERIES — ALL CLEARED
+              </p>
+              <div
+                className="rounded-lg p-5 space-y-3"
+                style={{ background: 'var(--t-bg-card)', border: '1px solid var(--t-frame-line)' }}
+              >
+                <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text)' }}>
+                  Every box opened, every mechanism solved. From the first mysterious safe to the
+                  haunted dollhouse of Old Sins, each room was a masterclass in tactile puzzle design.
+                  The craftsmanship never gets old.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {roomGames.map(g => (
+                    <GameChip key={g.name} name={g.name} perfect={g.perfect} />
                   ))}
                 </div>
               </div>
@@ -255,7 +242,8 @@ export default function GameProfilePage() {
           </div>
         </div>
 
-        {/* ── STATS OVERVIEW ── */}
+
+        {/* ── PLAYER STATS ── */}
         <div>
           <SheetHeader>PLAYER STATS</SheetHeader>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -289,7 +277,6 @@ export default function GameProfilePage() {
             VIEW FULL STEAM PROFILE →
           </a>
         </div>
-
       </div>
     </section>
   );
