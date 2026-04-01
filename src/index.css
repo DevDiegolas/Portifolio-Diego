@@ -82,45 +82,41 @@ label {
   text-shadow: 0 0 6px color-mix(in srgb, var(--t-quaternary) 20%, transparent);
 }
 
-.page-transition {
+/* ── Page transitions (enter + exit, both directions) ── */
+
+.page-enter,
+.page-exit {
   animation-duration: 380ms;
   animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   animation-fill-mode: both;
-  will-change: transform, opacity, filter;
+  will-change: transform;
+  background: var(--t-bg);
 }
 
-.page-transition-forward {
-  animation-name: page-slide-forward;
-}
+/* Entering from the right (navigate forward) */
+.page-enter-forward { animation-name: enter-from-right; }
+/* Entering from the left (navigate back) */
+.page-enter-back   { animation-name: enter-from-left; }
+/* Exiting to the left (navigate forward — old page leaves) */
+.page-exit-forward  { animation-name: exit-to-left; }
+/* Exiting to the right (navigate back — old page leaves) */
+.page-exit-back     { animation-name: exit-to-right; }
 
-.page-transition-back {
-  animation-name: page-slide-back;
+@keyframes enter-from-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
 }
-
-@keyframes page-slide-forward {
-  from {
-    opacity: 0;
-    transform: translateX(16px);
-    filter: blur(1.5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0);
-  }
+@keyframes enter-from-left {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
 }
-
-@keyframes page-slide-back {
-  from {
-    opacity: 0;
-    transform: translateX(-16px);
-    filter: blur(1.5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0);
-  }
+@keyframes exit-to-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+@keyframes exit-to-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
 }
 
 @keyframes stat-bar-grow {
@@ -142,7 +138,8 @@ label {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .page-transition {
+  .page-enter,
+  .page-exit {
     animation-duration: 1ms;
   }
 
