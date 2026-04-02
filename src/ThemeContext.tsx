@@ -31,6 +31,7 @@ export interface Theme {
   name: string;
   label: string;
   colors: ThemeColors;
+  secret?: boolean;
 }
 
 // ── Themes ────────────────────────────────────────────────────────────────
@@ -236,6 +237,36 @@ export const THEMES: Theme[] = [
       frameLine: '#45475a',
       frameLineDark: '#313244',
       frameOuter: '#313244',
+    },
+  },
+  {
+    name: 'steelsoul',
+    label: 'Steel Soul',
+    secret: true,
+    colors: {
+      primary: '#b0b8c8',
+      secondary: '#8a9bb0',
+      tertiary: '#c8cdd5',
+      quaternary: '#7889a0',
+      fifth: '#9aa8b8',
+      bg: '#08090c',
+      bgCard: '#0c0d12',
+      bgBar: '#0a0b10',
+      bgDarker: '#060709',
+      text: '#d0d4dc',
+      textMuted: '#8a90a0',
+      textDim: '#4a5060',
+      textDimmer: '#2a2e38',
+      prompt: '#b0b8c8',
+      error: '#a04050',
+      errorLight: '#c06070',
+      frame: '#8090a8',
+      frameBg: '#0c0d12',
+      frameLight: '#a0aec0',
+      frameDark: '#5a6878',
+      frameLine: '#2a3040',
+      frameLineDark: '#1a2030',
+      frameOuter: '#1a2030',
     },
   },
 ];

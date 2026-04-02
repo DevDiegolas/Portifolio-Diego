@@ -90,7 +90,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
           out: (
             <div className="pixel-body text-xl space-y-0.5" style={{ color: 'var(--t-text-muted)' }}>
               <p style={{ color: 'var(--t-tertiary)' }}>Available themes:</p>
-              {THEMES.map(t => (
+              {THEMES.filter(t => !t.secret).map(t => (
                 <p key={t.name}>
                   <span style={{ color: t.name === theme.name ? 'var(--t-secondary)' : 'var(--t-primary)' }}>
                     {t.name === theme.name ? '● ' : '  '}{t.name}
@@ -98,6 +98,14 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
                   <span style={{ color: 'var(--t-text-dim)' }}> — {t.label}</span>
                 </p>
               ))}
+              {localStorage.getItem('portfolio_theme') === 'steelsoul' || theme.name === 'steelsoul' ? (
+                <p key="steelsoul">
+                  <span style={{ color: theme.name === 'steelsoul' ? 'var(--t-secondary)' : '#a0aec0' }}>
+                    {theme.name === 'steelsoul' ? '● ' : '  '}steel
+                  </span>
+                  <span style={{ color: 'var(--t-text-dim)' }}> — ⚔ Steel Soul</span>
+                </p>
+              ) : null}
               <p className="mt-1" style={{ color: 'var(--t-text-dim)' }}>
                 Usage: <span style={{ color: 'var(--t-primary)' }}>theme {'<name>'}</span> or <span style={{ color: 'var(--t-primary)' }}>color {'<name>'}</span>
               </p>
@@ -108,15 +116,32 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
       }
 
       if (cmd.startsWith('theme ') || cmd.startsWith('color ')) {
-        const themeName = cmd.slice(6).trim();
+        let themeName = cmd.slice(6).trim();
+        if (themeName === 'steel') themeName = 'steelsoul';
+
+        // block steelsoul if never unlocked
+        const steelUnlocked = localStorage.getItem('portfolio_theme') === 'steelsoul' || theme.name === 'steelsoul';
+        if (themeName === 'steelsoul' && !steelUnlocked) {
+          setCmdLog(h => [...h, {
+            cmd: raw,
+            out: (
+              <span className="pixel-body text-xl" style={{ color: 'var(--t-error)' }}>
+                Unknown theme: <span style={{ color: 'var(--t-error-light)' }}>{cmd.slice(6).trim()}</span>
+                {' '}— type <span style={{ color: 'var(--t-primary)' }}>color list</span> to see options.
+              </span>
+            ),
+          }]);
+          return;
+        }
+
         const found = THEMES.find(t => t.name === themeName);
         if (found) {
           setTheme(found.name);
           setCmdLog(h => [...h, {
             cmd: raw,
             out: (
-              <span className="pixel-body text-xl" style={{ color: 'var(--t-secondary)' }}>
-                Theme changed to <span style={{ color: 'var(--t-primary)' }}>{found.label}</span>.
+              <span className="pixel-body text-xl" style={{ color: found.name === 'steelsoul' ? '#a0aec0' : 'var(--t-secondary)' }}>
+                {found.name === 'steelsoul' ? '⚔ ' : ''}Theme changed to <span style={{ color: found.name === 'steelsoul' ? '#c8cdd5' : 'var(--t-primary)' }}>{found.name === 'steelsoul' ? 'Steel Soul' : found.label}</span>.
               </span>
             ),
           }]);

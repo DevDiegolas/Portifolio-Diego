@@ -1,3 +1,95 @@
+import { useState, useRef, useCallback } from 'react';
+import { useTheme } from '../ThemeContext';
+import knightMask from '../assets/knight-mask.png';
+
+// ── Knight mask icon (button, isolated from text) ────────────────────────
+function KnightIcon({ style, onClick }: { style?: React.CSSProperties; onClick?: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="knight-btn"
+      style={{ userSelect: 'none', ...style }}
+    >
+      <img
+        src={knightMask}
+        alt=""
+        draggable={false}
+        style={{ width: '1.6em', height: 'auto', display: 'block' }}
+      />
+    </button>
+  );
+}
+
+// ── Steel Soul activation flash + Knight button ──────────────────────────
+const steelSoulStyles = `
+.knight-btn {
+  all: unset;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: url('/podendoclicar-big.png') 2 2, pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.knight-btn:hover {
+  transform: scale(1.18);
+  filter: brightness(1.25);
+}
+.knight-btn:active {
+  transform: scale(0.82);
+  filter: brightness(0.9);
+}
+
+@keyframes steel-flash {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes steel-pulse {
+  0%, 100% { text-shadow: 0 0 8px #a0aec044; }
+  50%      { text-shadow: 0 0 20px #a0aec088, 0 0 40px #a0aec044; }
+}
+.steel-soul-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: radial-gradient(ellipse at center, #c0c8d8 0%, #08090c 70%);
+  animation: steel-flash 1.2s ease-out forwards;
+  pointer-events: none;
+}
+.shiny-steel {
+  background: linear-gradient(
+    90deg,
+    #7888a0 0%, #b0b8c8 20%, #e0e4ec 40%,
+    #b0b8c8 60%, #7888a0 80%, #b0b8c8 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shiny-slide 3s ease-in-out infinite;
+}
+@keyframes steel-glow {
+  0%, 100% { box-shadow: 0 0 15px #a0aec033, 0 0 30px #a0aec015, inset 0 0 15px #a0aec008; }
+  50%      { box-shadow: 0 0 22px #a0aec055, 0 0 44px #a0aec025, inset 0 0 22px #a0aec012; }
+}
+.steel-card {
+  border: 2px solid #a0aec0;
+  animation: steel-glow 3s ease-in-out infinite;
+  background: linear-gradient(
+    135deg,
+    var(--t-bg-card) 0%,
+    color-mix(in srgb, #a0aec0 6%, var(--t-bg-card)) 50%,
+    var(--t-bg-card) 100%
+  );
+}
+`;
+
 // ── Shiny gold styles (injected once) ─────────────────────────────────────
 const goldStyles = `
 @keyframes shiny-slide {
@@ -106,10 +198,38 @@ const roomGames = [
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────
+const STEEL_SOUL_CLICKS = 5;
+
 export default function GameProfilePage() {
+  const { theme, setTheme } = useTheme();
+  const [clickCount, setClickCount] = useState(0);
+  const [showFlash, setShowFlash] = useState(false);
+  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null);
+  const isSteelSoul = theme.name === 'steelsoul';
+
+  const handleKnightClick = useCallback(() => {
+    if (isSteelSoul) return;
+
+    const next = clickCount + 1;
+    setClickCount(next);
+
+    // reset counter after 2s of no clicks
+    if (resetTimer.current) clearTimeout(resetTimer.current);
+    resetTimer.current = setTimeout(() => setClickCount(0), 2000);
+
+    if (next >= STEEL_SOUL_CLICKS) {
+      setClickCount(0);
+      setShowFlash(true);
+      setTimeout(() => setTheme('steelsoul'), 300);
+      setTimeout(() => setShowFlash(false), 1400);
+    }
+  }, [clickCount, isSteelSoul, setTheme]);
+
   return (
     <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full">
       <style>{goldStyles}</style>
+      <style>{steelSoulStyles}</style>
+      {showFlash && <div className="steel-soul-flash" />}
 
       <div
         className="relative rounded-2xl p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8"
@@ -137,7 +257,7 @@ export default function GameProfilePage() {
             ◈ GAME PROFILE ◈
           </p>
           <p className="pixel-body text-xl mt-2" style={{ color: 'var(--t-text)' }}>
-            <span className="shiny-gold" style={{ fontWeight: 700 }}>Deus Gamer</span>
+            <span className={isSteelSoul ? 'shiny-steel' : 'shiny-gold'} style={{ fontWeight: 700 }}>Deus Gamer</span>
             &nbsp;·&nbsp; Steam Level 20 &nbsp;·&nbsp; 198 Games
           </p>
           <p className="pixel-body text-base mt-0.5" style={{ color: 'var(--t-text-dim)' }}>
@@ -148,22 +268,28 @@ export default function GameProfilePage() {
         {/* ── FAVORITE GAME ── */}
         <div>
           <SheetHeader>FAVORITE GAME</SheetHeader>
-          <div className="gold-card rounded-lg p-5 sm:p-6">
+          <div className={`${isSteelSoul ? 'steel-card' : 'gold-card'} rounded-lg p-5 sm:p-6`}>
             <div className="flex items-center gap-3">
-              <span className="shiny-gold pixel-title text-base sm:text-lg">♛ Hollow Knight</span>
+              <KnightIcon
+                style={{ fontSize: '1.4rem' }}
+                onClick={handleKnightClick}
+              />
+              <span className={`${isSteelSoul ? 'shiny-steel' : 'shiny-gold'} pixel-title text-base sm:text-lg`}>
+                Hollow Knight
+              </span>
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-3">
               <span
                 className="pixel-title text-[0.55rem] px-2.5 py-0.5 rounded"
-                style={{ color: '#1a1a2e', background: '#ffd700' }}
+                style={{ color: isSteelSoul ? '#0c0d12' : '#1a1a2e', background: isSteelSoul ? '#a0aec0' : '#ffd700' }}
               >
                 ★ 63/63 ACHIEVEMENTS
               </span>
               <span
                 className="pixel-title text-[0.55rem] px-2.5 py-0.5 rounded"
-                style={{ color: '#1a1a2e', background: '#ffd700' }}
+                style={{ color: isSteelSoul ? '#0c0d12' : '#1a1a2e', background: isSteelSoul ? '#a0aec0' : '#ffd700' }}
               >
-                PERFECT GAME
+                {isSteelSoul ? 'STEEL SOUL' : 'PERFECT GAME'}
               </span>
             </div>
           </div>
