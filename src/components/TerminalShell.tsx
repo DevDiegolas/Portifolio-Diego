@@ -98,7 +98,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
                   <span style={{ color: 'var(--t-text-dim)' }}> — {t.label}</span>
                 </p>
               ))}
-              {localStorage.getItem('portfolio_theme') === 'steelsoul' || theme.name === 'steelsoul' ? (
+              {localStorage.getItem('steelsoul_unlocked') === '1' ? (
                 <p key="steelsoul">
                   <span style={{ color: theme.name === 'steelsoul' ? 'var(--t-secondary)' : '#a0aec0' }}>
                     {theme.name === 'steelsoul' ? '● ' : '  '}steel
@@ -120,7 +120,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
         if (themeName === 'steel') themeName = 'steelsoul';
 
         // block steelsoul if never unlocked
-        const steelUnlocked = localStorage.getItem('portfolio_theme') === 'steelsoul' || theme.name === 'steelsoul';
+        const steelUnlocked = localStorage.getItem('steelsoul_unlocked') === '1';
         if (themeName === 'steelsoul' && !steelUnlocked) {
           setCmdLog(h => [...h, {
             cmd: raw,

@@ -220,6 +220,7 @@ export default function GameProfilePage() {
     if (next >= STEEL_SOUL_CLICKS) {
       setClickCount(0);
       setShowFlash(true);
+      localStorage.setItem('steelsoul_unlocked', '1');
       setTimeout(() => setTheme('steelsoul'), 300);
       setTimeout(() => setShowFlash(false), 1400);
     }
