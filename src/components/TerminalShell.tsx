@@ -247,7 +247,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
             </nav>
           </div>
 
-          <nav className="sm:hidden mt-2 -mx-1 px-1 flex items-center gap-3 overflow-x-auto">
+          <nav className="sm:hidden mt-2 -mx-1 px-1 flex items-center gap-3 overflow-x-auto scrollbar-hide">
             {NAV.map(n => (
               <a
                 key={n.path}
@@ -305,7 +305,7 @@ export default function TerminalShell({ children, currentPath = '/' }: Props) {
           >
             <div style={{ overflow: 'hidden' }}>
               {cmdLog.length > 0 && (
-                <div ref={cmdLogRef} className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto space-y-3">
+                <div ref={cmdLogRef} className="px-3 sm:px-6 pt-3 pb-1 max-h-40 overflow-y-auto scrollbar-hide space-y-3">
                   {cmdLog.map((entry, i) => (
                     <div key={i}>
                       <div className="flex items-center gap-2">

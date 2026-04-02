@@ -152,7 +152,7 @@ function AppShell({
               {prev && (
                 <div
                   key={`out-${prev.path}`}
-                  className={`absolute inset-0 overflow-y-auto page-exit ${prev.dir === 'forward' ? 'page-exit-forward' : 'page-exit-back'}`}
+                  className={`absolute inset-0 overflow-y-auto scrollbar-hide page-exit ${prev.dir === 'forward' ? 'page-exit-forward' : 'page-exit-back'}`}
                   style={{ pointerEvents: 'none' }}
                 >
                   {pageFor(prev.path)}
@@ -160,7 +160,7 @@ function AppShell({
               )}
               <div
                 key={`in-${path}`}
-                className={`absolute inset-0 overflow-y-auto ${prev ? `page-enter ${direction === 'forward' ? 'page-enter-forward' : 'page-enter-back'}` : ''}`}
+                className={`absolute inset-0 overflow-y-auto scrollbar-hide ${prev ? `page-enter ${direction === 'forward' ? 'page-enter-forward' : 'page-enter-back'}` : ''}`}
               >
                 {pageFor(path)}
               </div>
