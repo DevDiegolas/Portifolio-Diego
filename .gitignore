@@ -49,6 +49,7 @@ __pycache__/
 # Project-specific local/private state
 _opensquad/
 squads/
+skills/
 .agent/
 .claude/
 .mcp.json
