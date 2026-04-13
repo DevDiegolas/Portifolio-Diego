@@ -1,11 +1,5 @@
 # Diego Portfolio
 
-![Status](https://img.shields.io/badge/status-em%20evolucao-22c55e?style=for-the-badge)
-![React](https://img.shields.io/badge/react-19-61dafb?style=for-the-badge&logo=react&logoColor=061a24)
-![TypeScript](https://img.shields.io/badge/typescript-5-3178c6?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/vite-8-646cff?style=for-the-badge&logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/tailwindcss-4-06b6d4?style=for-the-badge&logo=tailwindcss&logoColor=0b1f2a)
-![License](https://img.shields.io/badge/license-MIT-111827?style=for-the-badge)
 
 Portfolio pessoal interativo com identidade de terminal/game, criado para apresentar quem eu sou, minha jornada e meus projetos de forma visual, dinâmica e memoravel.
 
