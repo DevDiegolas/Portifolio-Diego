@@ -6,13 +6,13 @@ export default function Header() {
       </div>
       
       <nav className="hidden md:flex gap-6 font-medium text-gray-300">
-        <a href="#home" className="hover:text-blue-400 transition">Home</a>
-        <a href="#about" className="hover:text-blue-400 transition">About Me</a>
-        <a href="#games" className="hover:text-blue-400 transition">Games</a>
+        <a href="/" className="hover:text-blue-400 transition">Home</a>
+        <a href="/about" className="hover:text-blue-400 transition">About Me</a>
+        <a href="/games" className="hover:text-blue-400 transition">Games</a>
       </nav>
 
       <div className="flex gap-4 items-center">
-        <a href="#" className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded font-bold transition shadow-lg shadow-blue-500/20">
+        <a href="/resume" className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded font-bold transition shadow-lg shadow-blue-500/20">
           Resume
         </a>
       </div>

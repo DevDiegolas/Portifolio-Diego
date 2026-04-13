@@ -1,75 +1,457 @@
-import GameCard from './GameCard';
-import PotatoCard from './PotatoCard';
-import Footer from './Footer';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import iconPotato from '../assets/icon-potato.png';
+import bgPotato from '../assets/bg-potato.png';
+import iconSolo from '../assets/icon-solo.png';
+import bgSolo from '../assets/bg-solo.png';
 
-export default function Home() {
+// ── Tech data ──────────────────────────────────────────────────────────────
+const CDN = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
+
+const MOST_USED = [
+  { name: 'react',      icon: `${CDN}/react/react-original.svg` },
+  { name: 'node.js',    icon: `${CDN}/nodejs/nodejs-original.svg` },
+  { name: 'typescript', icon: `${CDN}/typescript/typescript-original.svg` },
+  { name: 'go',         icon: `${CDN}/go/go-original.svg` },
+  { name: 'docker',     icon: `${CDN}/docker/docker-original.svg` },
+];
+const FAMILIAR = [
+  { name: 'godot',      icon: `${CDN}/godot/godot-original.svg` },
+  { name: 'unity',      icon: `${CDN}/unity/unity-original.svg` },
+  { name: 'GameMaker',  icon: `https://cdn.simpleicons.org/gamemaker/00b96b` },
+  { name: 'aws',        icon: `${CDN}/amazonwebservices/amazonwebservices-original-wordmark.svg` },
+];
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function TechTree({ label, items }: { label: string; items: typeof MOST_USED }) {
   return (
-    <div className="flex flex-col w-full mt-10 space-y-24">
-
-      {/* 1. HERO SECTION */}
-      <section className="text-center space-y-6 max-w-6xl mx-auto px-6 w-full" id="home">
-        <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight">
-          Hi, I'm <span className="text-blue-400">Diego</span>
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-400 font-medium max-w-2xl mx-auto">
-          Fullstack Software Engineer & Game Developer
-        </p>
-      </section>
-
-      {/* 2. TECH STACK */}
-      <section className="max-w-6xl mx-auto px-6 w-full">
-        <h2 className="text-3xl font-bold text-white mb-8 border-b border-gray-800 pb-4">
-          My Tech Arsenal
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Most Used */}
-          <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-green-500/50 transition">
-            <h3 className="text-xl font-semibold text-green-400 mb-4">Most Used</h3>
-            <p className="text-gray-400 text-sm">React, Node.js, TypeScript, Go...</p>
-          </div>
-
-          {/* Familiar With */}
-          <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-blue-500/50 transition">
-            <h3 className="text-xl font-semibold text-blue-400 mb-4">Familiar With</h3>
-            <p className="text-gray-400 text-sm">Godot, Unity, PostgreSQL, AWS...</p>
-          </div>
-
-          {/* Currently Learning */}
-          <div className="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-purple-500/50 transition">
-            <h3 className="text-xl font-semibold text-purple-400 mb-4">Currently Learning</h3>
-            <p className="text-gray-400 text-sm">New architectures, Shaders...</p>
-          </div>
+    <div>
+      <p className="pixel-title text-xs" style={{ color: 'var(--t-secondary)' }}>{label}</p>
+      {items.map((item, i) => (
+        <div key={item.name} className="flex items-center gap-2 mt-1.5">
+          <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dim)' }}>
+            {i === items.length - 1 ? '└──' : '├──'}
+          </span>
+          <img src={item.icon} alt={item.name} className="w-4 h-4 shrink-0" />
+          <span className="pixel-body text-xl" style={{ color: 'var(--t-text)' }}>{item.name}</span>
         </div>
-      </section>
-
-      {/* 3. GAME STUDIES — full viewport width */}
-      <section className="w-full">
-        <h2 className="text-3xl font-bold text-white mb-8 border-b border-gray-800 pb-4 max-w-6xl mx-auto px-6">
-          Game Architecture & Logic
-        </h2>
-
-        <div className="flex flex-col w-full">
-          <PotatoCard />
-          <GameCard
-            title="Solo Blocking"
-            description="inspirado em solo leveling"
-            bgImageName="bg-solo.png"
-            iconImageName="icon-solo.png"
-            accentColor="#7c3aed"
-            overlayFrom="from-black/95"
-            overlayVia="via-purple-950/80"
-          />
-          <GameCard
-            title="Multiplayer Arena"
-            description="Exploring rollback netcode and client-side prediction for a seamless online competitive experience."
-            bgImageName="bg-potato.png"
-            iconImageName="icon-potato.png"
-          />
-        </div>
-      </section>
-
-      <Footer />
+      ))}
     </div>
+  );
+}
+
+const LEARNING = [
+  { name: 'Machine Learning', icon: `${CDN}/tensorflow/tensorflow-original.svg` },
+  { name: 'AI Agents',        icon: 'https://img.icons8.com/fluency/48/robot-2.png' },
+  { name: 'Automation',       icon: `${CDN}/github/github-original.svg` },
+];
+
+function LearningTree() {
+  return (
+    <div>
+      <p className="pixel-title text-xs" style={{ color: 'var(--t-secondary)' }}>currently-learning</p>
+      {LEARNING.map((item, i) => (
+        <div key={item.name} className="flex items-center gap-2 mt-1.5">
+          <span className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dim)' }}>
+            {i === LEARNING.length - 1 ? '└──' : '├──'}
+          </span>
+          <img src={item.icon} alt={item.name} className="w-4 h-4 shrink-0" />
+          <span className="pixel-body text-xl" style={{ color: 'var(--t-text)' }}>{item.name}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setVis(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+  return (
+    <div style={{ opacity: vis ? 1 : 0, transition: 'opacity 0.6s ease' }}>
+      {children}
+    </div>
+  );
+}
+
+// ── Game window card (with hover-expand) ───────────────────────────────────
+interface GameWindowProps {
+  filename: string;
+  title: string;
+  description: string;
+  expandedText: string;
+  icon: string;
+  bgImage: string;
+  tags: string[];
+  accentColor: string;
+}
+
+function GameWindow({
+  filename, title, description, expandedText, icon, bgImage, tags, accentColor,
+}: GameWindowProps) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <a
+      href="/games"
+      className="block overflow-hidden transition-colors duration-200"
+      style={{
+        borderRadius: 4,
+        border: `1px solid ${hovered ? accentColor + '50' : accentColor + '25'}`,
+        background: 'var(--t-bg-card)',
+        textDecoration: 'none',
+        transition: 'border-color 0.2s ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* Window title bar */}
+      <div
+        className="flex items-center gap-2 px-3 py-1.5"
+        style={{ background: 'var(--t-bg-bar)', borderBottom: `1px solid ${accentColor}18` }}
+      >
+        <span className="pixel-title text-xs" style={{ color: `${accentColor}77` }}>▶</span>
+        <span className="pixel-title truncate" style={{ fontSize: '0.6rem', color: 'var(--t-text-dimmer)' }}>{filename}</span>
+        <div className="flex-1" />
+        <div className="hidden sm:flex items-center gap-1">
+        {tags.map(t => (
+          <span
+            key={t}
+            className="pixel-title"
+            style={{
+              fontSize: '0.52rem',
+              padding: '1px 5px',
+              color: `${accentColor}bb`,
+              background: `${accentColor}0f`,
+              border: `1px solid ${accentColor}28`,
+              borderRadius: 2,
+            }}
+          >{t}</span>
+        ))}
+        </div>
+      </div>
+
+      {/* Compact row — always visible */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 md:p-4">
+        <div className="relative w-20 h-14 shrink-0 overflow-hidden" style={{ borderRadius: 3, border: `1px solid ${accentColor}18` }}>
+          <img
+            src={bgImage}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'blur(4px) saturate(0.6)', opacity: 0.4 }}
+          />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img src={icon} alt={title} className="w-9 h-9 object-contain drop-shadow-lg" />
+          </div>
+        </div>
+
+        <div className="flex-1 min-w-0">
+          <p className="pixel-title mb-1" style={{ fontSize: '0.58rem', color: accentColor, letterSpacing: '0.08em' }}>{title}</p>
+          <p
+            className="pixel-body text-xl leading-snug"
+            style={{
+              color: 'var(--t-text-dim)',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              overflow: 'hidden',
+            } as React.CSSProperties}
+          >{description}</p>
+        </div>
+
+        <span
+          className="pixel-title text-xs shrink-0 transition-transform duration-300 hidden sm:inline"
+          style={{ color: `${accentColor}55`, transform: hovered ? 'rotate(90deg)' : 'none' }}
+        >→</span>
+      </div>
+
+      {/* Expanded section — slides open on hover */}
+      <div
+        style={{
+          maxHeight: hovered ? '520px' : '0',
+          opacity: hovered ? 1 : 0,
+          overflow: 'hidden',
+          transition: 'max-height 0.5s ease, opacity 0.35s ease',
+        }}
+      >
+        <div
+          className="px-4 pb-5 pt-1 space-y-3"
+          style={{ borderTop: `1px solid ${accentColor}18` }}
+        >
+          <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text-muted)' }}>{expandedText}</p>
+          <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text-dim)' }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt
+            ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+            ullamco laboris nisi ut aliquip ex ea commodo consequat.
+          </p>
+          <p className="pixel-body text-xl leading-relaxed" style={{ color: 'var(--t-text-dim)' }}>
+            Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+            nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+            deserunt mollit anim id est laborum.
+          </p>
+          <div className="pt-1">
+            <span
+              className="pixel-title"
+              style={{
+                fontSize: '0.55rem',
+                color: accentColor,
+                border: `1px solid ${accentColor}40`,
+                background: `${accentColor}0c`,
+                padding: '4px 10px',
+                borderRadius: 3,
+              }}
+            >open project →</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Accent bottom */}
+      <div style={{ height: 1, background: `linear-gradient(90deg, ${accentColor}${hovered ? '70' : '40'}, transparent 70%)`, transition: 'all 0.3s' }} />
+    </a>
+  );
+}
+
+// ── Static intro (full terminal state, no animation) ──────────────────────
+function Cmd({ text }: { text: string }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+      <span className="pixel-title text-xs" style={{ color: 'var(--t-primary)' }}>{text}</span>
+    </div>
+  );
+}
+
+function Out({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="pixel-body text-xl leading-snug" style={{ color: 'var(--t-text)' }}>{children}</div>
+  );
+}
+
+function StaticIntro() {
+  return (
+    <div className="space-y-0">
+      <Cmd text="whoami" />
+      <Out>Hi, I&apos;m <span style={{ color: 'var(--t-primary)' }}>Diego.</span></Out>
+      <div className="h-2" />
+      <Cmd text="cat role.txt" />
+      <Out>Fullstack Software Engineer &amp; Game Developer</Out>
+      <div className="h-2" />
+      <Cmd text="npm list --skills" />
+      <div className="h-2" />
+      <Out><TechTree label="most-used"     items={MOST_USED} /></Out>
+      <div className="h-2" />
+      <Out><TechTree label="familiar-with" items={FAMILIAR}  /></Out>
+      <div className="h-2" />
+      <Out><LearningTree /></Out>
+      <div className="h-2" />
+      <Cmd text="ls games/" />
+    </div>
+  );
+}
+
+// ── Intro sequence ─────────────────────────────────────────────────────────
+type SeqItem =
+  | { type: 'cmd';   text: string }
+  | { type: 'out';   node: React.ReactNode }
+  | { type: 'blank' }
+  | { type: 'pause'; ms: number }
+
+const SEQUENCE: SeqItem[] = [
+  { type: 'cmd',   text: 'whoami' },
+  { type: 'out',   node: <span>Hi, I&apos;m <span style={{ color: 'var(--t-primary)' }}>Diego.</span></span> },
+  { type: 'blank' },
+  { type: 'pause', ms: 280 },
+  { type: 'cmd',   text: 'cat role.txt' },
+  { type: 'out',   node: 'Fullstack Software Engineer & Game Developer' },
+  { type: 'blank' },
+  { type: 'pause', ms: 280 },
+  { type: 'cmd',   text: 'npm list --skills' },
+  { type: 'blank' },
+  { type: 'out',   node: <TechTree label="most-used"     items={MOST_USED} /> },
+  { type: 'blank' },
+  { type: 'out',   node: <TechTree label="familiar-with" items={FAMILIAR}  /> },
+  { type: 'blank' },
+  { type: 'out',   node: <LearningTree /> },
+  { type: 'blank' },
+  { type: 'pause', ms: 400 },
+  { type: 'cmd',   text: 'ls games/' },
+];
+
+function TerminalIntro({ onDone, onScroll }: { onDone: () => void; onScroll: () => void }) {
+  const [lines,      setLines]      = useState<React.ReactNode[]>([]);
+  const [currentCmd, setCurrentCmd] = useState('');
+  const [typing,     setTyping]     = useState(true);
+  const onDoneRef = useRef(onDone);
+  const onScrollRef = useRef(onScroll);
+
+  useEffect(() => {
+    onDoneRef.current = onDone;
+    onScrollRef.current = onScroll;
+  }, [onDone, onScroll]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const delay = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+
+    async function run() {
+      for (let i = 0; i < SEQUENCE.length; i++) {
+        if (cancelled) return;
+        const item = SEQUENCE[i];
+
+        if (item.type === 'blank') {
+          setLines(l => [...l, <div key={`b${i}`} className="h-2" />]);
+        } else if (item.type === 'pause') {
+          await delay(item.ms);
+        } else if (item.type === 'out') {
+          setLines(l => [...l, (
+            <div key={`o${i}`} className="pixel-body text-xl leading-snug" style={{ color: 'var(--t-text)' }}>
+              {item.node}
+            </div>
+          )]);
+          onScrollRef.current();
+          await delay(50);
+        } else if (item.type === 'cmd') {
+          setTyping(true);
+          for (let c = 0; c <= item.text.length; c++) {
+            if (cancelled) return;
+            if (c % 2 === 0 || c === item.text.length) {
+              setCurrentCmd(item.text.slice(0, c));
+            }
+            await delay(45 + Math.random() * 25);
+          }
+          if (cancelled) return;
+          const committed = item.text;
+          setCurrentCmd('');
+          setLines(l => [...l, (
+            <div key={`c${i}`} className="flex items-center gap-2">
+              <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+              <span className="pixel-title text-xs"             style={{ color: 'var(--t-primary)' }}>{committed}</span>
+            </div>
+          )]);
+          onScrollRef.current();
+          await delay(180);
+        }
+      }
+      setTyping(false);
+      onDoneRef.current();
+    }
+
+    run();
+    return () => { cancelled = true; };
+  }, []);
+
+  return (
+    <div>
+      {lines}
+      <div className="flex items-center gap-2 mt-1">
+        <span className="pixel-title text-xs select-none" style={{ color: 'var(--t-prompt)' }}>$</span>
+        <span className="pixel-title text-xs"             style={{ color: 'var(--t-primary)' }}>{currentCmd}</span>
+        <span
+          className={`inline-block w-1.5 h-3.5 align-middle intro-caret ${typing ? '' : 'intro-caret-idle'}`}
+          style={{ background: 'var(--t-primary)' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+// ── sessionStorage key ─────────────────────────────────────────────────────
+const INTRO_KEY = 'portfolio_intro_shown';
+
+// ── Page ───────────────────────────────────────────────────────────────────
+export default function Home() {
+  const [introSeen]    = useState(() => sessionStorage.getItem(INTRO_KEY) === '1');
+  const [showContent,  setShowContent]  = useState(introSeen);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Mark intro as seen immediately so back-navigation skips it
+  useEffect(() => {
+    if (!introSeen) sessionStorage.setItem(INTRO_KEY, '1');
+  }, [introSeen]);
+
+  const scrollToBottom = useCallback(() => {
+    requestAnimationFrame(() => {
+      const scrollable = wrapperRef.current?.parentElement;
+      if (scrollable) scrollable.scrollTop = scrollable.scrollHeight;
+    });
+  }, []);
+
+  const handleIntroDone = useCallback(() => {
+    setShowContent(true);
+  }, []);
+
+  useEffect(() => { if (showContent) scrollToBottom(); }, [showContent, scrollToBottom]);
+
+  return (
+      <div ref={wrapperRef} className="px-4 sm:px-6 py-5 sm:py-6 md:px-10 md:py-8">
+
+        {/* First visit: animated intro. Return visit: full static output instantly. */}
+        {!introSeen
+          ? <TerminalIntro onDone={handleIntroDone} onScroll={scrollToBottom} />
+          : <StaticIntro />
+        }
+
+        {/* Games + contacts */}
+        {showContent && (
+          <FadeIn delay={introSeen ? 0 : 80}>
+            <div className="mt-3 space-y-2">
+              <p className="pixel-body text-lg select-none" style={{ color: 'var(--t-text-dimmer)' }}>
+                {'  drwxr-xr-x  2  diego  staff'}
+              </p>
+
+              <GameWindow
+                filename="games/potato-clicker"
+                title="POTATO CLICKER"
+                description="An idle clicker game where you grow your potato empire."
+                expandedText="Click to harvest, buy upgrades, and watch your potatoes multiply across increasingly complex prestige loops."
+                icon={iconPotato}
+                bgImage={bgPotato}
+                tags={['idle', 'godot', 'in-dev']}
+                accentColor="#c2ce2b"
+              />
+
+              <GameWindow
+                filename="games/solo-blocking"
+                title="SOLO BLOCKING"
+                description="A fast combat prototype with tight block mechanics."
+                expandedText="Responsive controls, impact feedback, and movement polish are the core focus of this action combat prototype."
+                icon={iconSolo}
+                bgImage={bgSolo}
+                tags={['combat', 'godot', 'in-dev']}
+                accentColor="#a855f7"
+              />
+            </div>
+
+            {/* Contacts */}
+            <div className="mt-6 pt-4" style={{ borderTop: '1px solid color-mix(in srgb, var(--t-primary) 6%, transparent)' }}>
+              <p className="pixel-title mb-3" style={{ fontSize: '0.58rem', color: 'var(--t-text-dimmer)', letterSpacing: '0.1em' }}># contacts</p>
+              <div className="space-y-1.5">
+                {[
+                  { key: 'github',   val: 'DevDiegolas',                    href: 'https://github.com/DevDiegolas',                              ext: true  },
+                  { key: 'linkedin', val: 'diego-gonçalves-piovezan',        href: 'https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/', ext: true  },
+                  { key: 'resume',   val: '~/resume',                        href: '/resume',                                                     ext: false },
+                ].map(({ key, val, href, ext }) => (
+                  <div key={key} className="flex items-center gap-2 min-w-0">
+                    <span className="pixel-body text-lg select-none shrink-0" style={{ color: 'var(--t-text-dimmer)', width: 62, textAlign: 'right' }}>{key}</span>
+                    <span className="pixel-body text-lg select-none shrink-0" style={{ color: 'var(--t-text-dimmer)' }}>→</span>
+                    <a
+                      href={href}
+                      target={ext ? '_blank' : undefined}
+                      rel={ext ? 'noreferrer' : undefined}
+                      className="pixel-body text-xl transition-colors truncate"
+                      style={{ color: 'var(--t-text-dim)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--t-text)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--t-text-dim)'; }}
+                    >{val}</a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeIn>
+        )}
+
+        <div className="h-6" />
+      </div>
   );
 }

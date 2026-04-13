@@ -1,73 +1,34 @@
-# React + TypeScript + Vite
+# Diego Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Portfólio pessoal interativo com identidade de terminal/game, criado para apresentar quem eu sou, minha jornada e meus projetos de forma visual, dinâmica e memorável.
 
-Currently, two official plugins are available:
+## 🎯 Propósito
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Este site foi pensado para ser mais do que um currículo online. A ideia é ser um espaço vivo para:
 
-## React Compiler
+- Mostrar meu perfil como Fullstack Engineer e Game Developer.
+- Contar minha história de forma mais visual.
+- Destacar projetos com uma navegação divertida e clara.
+- Transformar visita em experiência, não apenas leitura.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🕹️ Experiência do site
 
-## Expanding the ESLint configuration
+- Navegação com estilo de terminal e comandos interativos.
+- Tela de loading em estilo game (`Diego.exe`).
+- Transições entre páginas com animações de entrada/saída.
+- Temas visuais trocáveis via comando (`theme`/`color`).
+- Modo especial `underwater`.
+- Páginas principais: Home, About, Games, Game Profile e Resume (Por enquanto).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧰 Stack principal
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React 19
+- TypeScript 5
+- Vite 8
+- Tailwind CSS 4
+- ESLint 9
+- PostCSS + Autoprefixer
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🔭 Visão
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Este portfólio continua em evolução. A meta é expandir o número de projetos jogáveis, melhorar a narrativa visual e aprofundar o lado interativo da experiência.

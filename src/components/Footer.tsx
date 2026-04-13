@@ -16,13 +16,23 @@ const Footer: React.FC = () => {
 
         {/* Right side: Social links */} 
         <div className="flex space-x-4">
-          <a href="#" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">
+          <a
+            href="https://github.com/DevDiegolas"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
+          >
             GitHub
           </a>
-          <a href="#" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">
+          <a
+            href="https://www.linkedin.com/in/diego-gon%C3%A7alves-piovezan/"
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm text-gray-400 hover:text-blue-400 transition-colors"
+          >
             LinkedIn
           </a>
-          <a href="#" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">
+          <a href="/resume" className="text-sm text-gray-400 hover:text-blue-400 transition-colors">
             Resume
           </a>
         </div>

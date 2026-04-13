@@ -7,14 +7,33 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Runtime
+*.pid
+*.seed
+*.pid.lock
+
 node_modules
+dashboard/node_modules
 dist
 dist-ssr
+coverage
+.turbo
+.cache
 *.local
 
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Build outputs / temp
+build
+tmp
+temp
+*.tmp
+
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 .idea
 .DS_Store
 *.suo
@@ -22,3 +41,25 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Project-specific local/private state
+_opensquad/
+squads/
+skills/
+.agent/
+.claude/
+.mcp.json
+CLAUDE.md
+
+# Secrets / credentials
+credentials.json
+*.pem
+*.key
+.vercel
+
+# Claude local settings
+.claude/settings.local.json
