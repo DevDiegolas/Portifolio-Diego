@@ -7,7 +7,7 @@ Portfólio pessoal interativo com identidade de terminal/game, criado para apres
 Este site foi pensado para ser mais do que um currículo online. A ideia é ser um espaço vivo para:
 
 - Mostrar meu perfil como Fullstack Engineer e Game Developer.
-- Contar minha história de forma mais humana e visual.
+- Contar minha história de forma mais visual.
 - Destacar projetos com uma navegação divertida e clara.
 - Transformar visita em experiência, não apenas leitura.
 
