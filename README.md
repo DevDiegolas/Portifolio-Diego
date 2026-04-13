@@ -32,3 +32,4 @@ Este site foi pensado para ser mais do que um currículo online. A ideia é ser 
 ## 🔭 Visão
 
 Este portfólio continua em evolução. A meta é expandir o número de projetos jogáveis, melhorar a narrativa visual e aprofundar o lado interativo da experiência.
+Link: https://portifolio-diego-vert.vercel.app
