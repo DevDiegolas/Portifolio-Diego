@@ -33,8 +33,7 @@ temp
 *.tmp
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
+.vscode/
 .idea
 .DS_Store
 *.suo
@@ -47,9 +46,13 @@ temp
 __pycache__/
 *.py[cod]
 
-# Opensquad local/private state
-_opensquad/_browser_profile/
-_opensquad/_logs/
+# Project-specific local/private state
+_opensquad/
+squads/
+.agent/
+.claude/
+.mcp.json
+CLAUDE.md
 
 # Secrets / credentials
 credentials.json
