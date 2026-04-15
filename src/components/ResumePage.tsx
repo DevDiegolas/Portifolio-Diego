@@ -216,7 +216,7 @@ export default function ResumePage() {
               <SheetHeader>COMPLETED QUESTS</SheetHeader>
               <div className="space-y-4">
                 <QuestEntry
-                  title="Junior FullStack Engineer"
+                  title="FullStack Engineer"
                   company="Orion Maritima"
                   dates="2025 - Present"
                   achievements={[
