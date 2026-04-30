@@ -7,8 +7,8 @@ const NAV = [
   { label: '~/home',    path: '/'       },
   { label: '~/about',   path: '/about'  },
   { label: '~/games',   path: '/games'  },
-  { label: '~/profile', path: '/game-profile' },
   { label: '~/resume',  path: '/resume' },
+  { label: '~/profile', path: '/game-profile' },
 ];
 
 interface Props {

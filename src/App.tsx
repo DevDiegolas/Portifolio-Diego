@@ -14,8 +14,8 @@ const ROUTE_ORDER: Record<string, number> = {
   '/': 0,
   '/about': 1,
   '/games': 2,
-  '/game-profile': 3,
-  '/resume': 4,
+  '/resume': 3,
+  '/game-profile': 4,
 };
 
 const TRANSITION_MS = 380;
