@@ -5,9 +5,19 @@ import bgSolo from '../assets/bg-solo.png';
 import iconPotato from '../assets/icon-potato.png';
 import iconSolo from '../assets/icon-solo.png';
 
+const GAME_IDS = ['potato-clicker', 'solo-blocking'] as const;
+
 export default function GamesPage() {
   const { theme } = useTheme();
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(() => {
+    const stored = sessionStorage.getItem('games_selected');
+    if (stored) {
+      sessionStorage.removeItem('games_selected');
+      const idx = GAME_IDS.indexOf(stored as typeof GAME_IDS[number]);
+      return idx >= 0 ? idx : 0;
+    }
+    return 0;
+  });
   const [transitioning, setTransitioning] = useState(false);
   const rouletteRef = useRef<HTMLDivElement>(null);
 

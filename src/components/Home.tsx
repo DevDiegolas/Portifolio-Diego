@@ -85,16 +85,18 @@ interface GameWindowProps {
   bgImage: string;
   tags: string[];
   accentColor: string;
+  gameId: string;
 }
 
 function GameWindow({
-  filename, title, description, expandedText, icon, bgImage, tags, accentColor,
+  filename, title, description, expandedText, icon, bgImage, tags, accentColor, gameId,
 }: GameWindowProps) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <a
       href="/games"
+      onClick={() => sessionStorage.setItem('games_selected', gameId)}
       className="block overflow-hidden transition-colors duration-200"
       style={{
         borderRadius: 4,
@@ -409,6 +411,7 @@ export default function Home() {
                 bgImage={bgPotato}
                 tags={['idle', 'godot', 'in-dev']}
                 accentColor="#c2ce2b"
+                gameId="potato-clicker"
               />
 
               <GameWindow
@@ -420,6 +423,7 @@ export default function Home() {
                 bgImage={bgSolo}
                 tags={['combat', 'godot', 'in-dev']}
                 accentColor="#a855f7"
+                gameId="solo-blocking"
               />
             </div>
 
